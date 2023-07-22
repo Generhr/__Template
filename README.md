@@ -71,6 +71,7 @@ Headers go in [include/](include/), source code in [src/](src/), and unit tests 
 - (Optional) Automate unit tests with [git hooks](https://www.redhat.com/sysadmin/git-hooks)
 - (Optional) Install the various [hooks](https://pre-commit.com/hooks.html) listed in [.pre-commit-config.yaml](.pre-commit-config.yaml) for use with pre-commit or delete the file if you don't intend to use it. Pre-commit can be automated with git hooks like ctest above
 - (Optional) Setup [Ccache](https://ccache.dev/) to speed up subsequent compilations. It is already built into the project but only runs if the program can be found
+- (Optional, **Windows only**) If you have multiple projects, consider using [symlinks](https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/) to use the same formatting settings ([.clang-format](.clang-format), [.clang-tidy](.clang-tidy), etc..) for all your projects with a single file. There is a [batch](Tools/Symlink.bat) file that will perform this process automatically but you will need to change the source directory. [The first two lines](https://stackoverflow.com/a/52517718) are to run with admin privileges
 
 ## Building
 

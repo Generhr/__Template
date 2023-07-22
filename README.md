@@ -57,7 +57,7 @@ Headers go in [include/](include/), source code in [src/](src/), and unit tests 
 - MSVC 2017 (or higher), G++9 (or higher), Clang++9 (or higher)
 - (Optional) [Doxygen](https://www.doxygen.nl/download.html) and [Graphviz](https://graphviz.org/download/)
 - (Optional) [Cppcheck](https://cppcheck.sourceforge.io/)
-- (Optional) Code Coverage (only on GNU|Clang): [lcov](https://pypi.org/project/lcov/) and [gcovr](https://gcovr.com/en/stable/installation.html)
+- (Optional, **GNU or Clang only**) Code Coverage: [lcov](https://pypi.org/project/lcov/) and [gcovr](https://gcovr.com/en/stable/installation.html)
 
 ## Additional setup
 

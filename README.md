@@ -63,17 +63,14 @@ Headers go in [include/](include/), source code in [src/](src/), and unit tests 
 
 ### GitHub
 
-- Create a [GITHUB_TOKEN](https://dev.to/github/the-githubtoken-in-github-actions-how-it-works-change-permissions-customizations-3cgp) for the documentation workflow to use.
-
+- Give your workflows write permission in Settings/Actions/General/Workflow permissions
 - Setup [GitHub Pages](https://docs.github.com/en/pages/quickstart)
 
 ### Local Machine
 
-- (Optional) Automate unit tests with [git hooks](https://www.redhat.com/sysadmin/git-hooks).
-
-- (Optional) Install the various [hooks](https://pre-commit.com/hooks.html) listed in [.pre-commit-config.yaml](.pre-commit-config.yaml) for use with pre-commit or delete the file if you don't intend to use it. Pre-commit can be automated with git hooks like ctest above.
-
-- (Optional) Setup [Ccache](https://ccache.dev/) to speed up subsequent compilations. It is already built into the project but only runs if the program can be found.
+- (Optional) Automate unit tests with [git hooks](https://www.redhat.com/sysadmin/git-hooks)
+- (Optional) Install the various [hooks](https://pre-commit.com/hooks.html) listed in [.pre-commit-config.yaml](.pre-commit-config.yaml) for use with pre-commit or delete the file if you don't intend to use it. Pre-commit can be automated with git hooks like ctest above
+- (Optional) Setup [Ccache](https://ccache.dev/) to speed up subsequent compilations. It is already built into the project but only runs if the program can be found
 
 ## Building
 

@@ -81,6 +81,8 @@ elseif(USE_VCPKG)
 
     if(VERBOSE_OUTPUT)
         set(VCPKG_VERBOSE ON)
+    else()
+        list(APPEND VCPKG_INSTALL_OPTIONS "--no-print-usage") #: https://learn.microsoft.com/en-us/vcpkg/commands/install
     endif()
 
     option(VCPKG_APPLOCAL_DEPS "Automatically copy dependencies into the output directory for executables." ON)

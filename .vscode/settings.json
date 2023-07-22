@@ -15,17 +15,17 @@
     "explorer.copyRelativePathSeparator": "/",
     "files.autoSave": "off", // This will build the project when you switch to another window (annoying).
     "files.associations": {
-        "*.py": "python",
-        "*.pylintrc": "ini",
-        "*.ahk": "ahk2",
-        "*.pyx": "cython",
-        ".clang*": "yaml",
+        ".clang-tidy": "binary",
         "*.gpj": "jsonc",
         "*.gvw": "jsonc",
-        "xstring": "cpp",
-        "memory": "cpp",
+        "*.py": "python",
+        "*.pylintrc": "ini",
+        "*.pyx": "cython",
+        ".clang-format": "yaml",
         "chrono": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "memory": "cpp",
+        "xstring": "cpp"
     },
     "files.exclude": {
         "node_modules/**/*": true,

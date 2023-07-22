@@ -15,13 +15,12 @@
     "explorer.copyRelativePathSeparator": "/",
     "files.autoSave": "off", // This will build the project when you switch to another window (annoying).
     "files.associations": {
-        ".clang-tidy": "binary",
         "*.gpj": "jsonc",
         "*.gvw": "jsonc",
         "*.py": "python",
         "*.pylintrc": "ini",
         "*.pyx": "cython",
-        ".clang-format": "yaml",
+        ".clang*": "yaml",
         "chrono": "cpp",
         "iomanip": "cpp",
         "memory": "cpp",
@@ -120,7 +119,7 @@
     "cmake.clearOutputBeforeBuild": true,
     "cmake.cmakePath": "C:/Program Files/CMake/bin/cmake.exe",
     "cmake.configureOnEdit": true,
-    "cmake.configureOnOpen": true,
+    "cmake.configureOnOpen": false,
     "cmake.configureSettings": {
         //"CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/external/vcpkg/scripts/buildsystems/vcpkg.cmake"
     },

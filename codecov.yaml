@@ -1,0 +1,7 @@
+ignore:
+  - "src/*"
+  - "test/*"
+  - "external/*"
+  - "external/**/*"
+comment:
+  require_changes: true

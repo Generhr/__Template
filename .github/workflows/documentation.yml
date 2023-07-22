@@ -2,33 +2,47 @@ name: Documentation
 
 on:
   push:
+    branches: [main, master, dev]
     tags:
       - "*"
-    branches: [ main, master ]
+  workflow_dispatch:
+
+concurrency:
+  group: documentation
+  cancel-in-progress: true
+
+env:
+  BUILD_TYPE: Debug
 
 jobs:
-  build:
-    name: Build and publish documentation
+  deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-    - name: Install Docs
-      run: |
-        sudo apt-get install doxygen
-        pip install jinja2 Pygments
-    - name: prepare
-      run: |
-        make prepare
-    - name: configure
-      run: |
-        cmake -H. -Bbuild -G "Unix Makefiles" -DCMAKE_BUILD_TYPE="Debug"
-    - name: building
-      run: |
-        cmake --build build --config Debug --target docs -j4
-    - name: Deploy to GitHub Pages
-      uses: Cecilapp/GitHub-Pages-deploy@v3
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        build_dir: ./docs/html
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v2
+      - name: Install Packages
+
+        run: |
+          sudo apt-get install doxygen graphviz
+          pip install jinja2 Pygments
+
+      - name: Configure
+        run: cmake -H. -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_DOXYGEN=On
+
+      - name: Generate Doxygen Documentation
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target doxygen -j4
+
+      - name: Cache Build Directory
+        uses: actions/cache@v3
+        with:
+          path: build
+          key: cmake-build-documentation-${{ hashFiles('CMakeCache.txt') }}
+
+      #: https://github.com/peaceiris/actions-gh-pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{github.workspace}}/docs/html

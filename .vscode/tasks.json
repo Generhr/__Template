@@ -2,24 +2,59 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Executable Call",
             "type": "shell",
-            "command": [
-                "${workspaceFolder}/build/bin/main"
-            ],
-            "args": [
-                "--verbose",
-                "true",
-                "--filename",
-                "${workspaceFolder}/app/test.json"
+            "label": "Sequence",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Clear",
+                "Configure",
+                "Build",
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
             "problemMatcher": [
-                "$gcc"
-            ]
+                {
+                    "base": "$gcc",
+                    "fileLocation": [
+                        "relative",
+                        "${command:cmake.buildDirectory}"
+                    ]
+                },
+            ],
+            "options": {
+                "environment": {
+                    "CLICOLOR_FORCE": "1"
+                }
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            "label": "Clear",
+            "type": "shell",
+            "command": "cls",
+            "options": {
+                "cwd": "${workspaceFolder}/build",
+            },
+        },
+        {
+            "label": "Configure",
+            "type": "shell",
+            "command": "cmake ..",
+            "options": {
+                "cwd": "${workspaceFolder}/build",
+            },
+        },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "cmake --build .",
+            "options": {
+                "cwd": "${workspaceFolder}/build",
+            },
         }
     ]
 }

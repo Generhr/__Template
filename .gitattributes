@@ -1,11 +1,2 @@
-# Set the default behavior for all files.
+# Auto detect text files and perform LF normalization
 * text=auto eol=lf
-
-# Normalized and converts to native line endings on checkout.
-*.c text
-*.cc text
-*.cxx
-*.cpp text
-*.h text
-*.hxx text
-*.hpp text

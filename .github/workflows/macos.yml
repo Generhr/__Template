@@ -1,27 +1,39 @@
-name: MacOS CI Test
+name: macOS CI
 
 on:
   push:
-    branches: [ main, master, dev ]
+    branches: [main, master, dev]
   pull_request:
-    branches: [ main, master, dev ]
+    branches: [main, master, dev]
+
+concurrency:
+  group: macos
+  cancel-in-progress: true
+
+env:
+  BUILD_TYPE: Debug
 
 jobs:
   build:
     runs-on: macos-latest
+    timeout-minutes: 5
+
     steps:
-    - uses: actions/checkout@v2
-    - name: prepare
-      run: |
-        make prepare
-    - name: configure
-      run: |
-        cmake -H. -Bbuild -G "Unix Makefiles" -DCMAKE_BUILD_TYPE="Debug"
-    - name: building
-      run: |
-        cmake --build build --config Debug --target unit_tests -j4
-    - name: testing
-      run: |
-        cd build
-        cd tests
-        ./unit_tests
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure
+        run: cmake -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target unit_tests -j4
+
+      - name: Cache Build Directory
+        uses: actions/cache@v3
+        with:
+          path: build
+          key: cmake-build-macos-${{ hashFiles('CMakeCache.txt') }}
+
+      - name: Test
+        run: ctest -C ${{env.BUILD_TYPE}}
+        working-directory: ${{github.workspace}}/build

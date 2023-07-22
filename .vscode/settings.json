@@ -140,7 +140,7 @@
     "cmake.showSystemKits": false,
     //=========== CMake Format ===================================================//
     "cmakeFormat.args": [
-        "--config-files=C:/Users/Onimuru/OneDrive/__Code/C++/__Template/.cmake-format.yaml",
+        "--config-files=C:/Users/Onimuru/Code/C++/__Template/.cmake-format.yaml",
         "--literal-comment-pattern=.*"
     ],
     //====== CMake Language Support ==============================================//

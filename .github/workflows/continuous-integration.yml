@@ -16,8 +16,11 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     timeout-minutes: 10
 
+    env:
+      ADDITIONAL_ARGS: ${{ matrix.os == 'ubuntu-latest' && '-DENABLE_CODE_COVERAGE=ON' || '' }}
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: true
@@ -30,12 +33,25 @@ jobs:
         with:
           vcpkgDirectory: "${{ github.workspace }}/external/vcpkg"
           vcpkgJsonGlob: "${{ github.workspace }}/vcpkg.json"
+          # Since the cache must be invalidated when content of the vcpkg.json file changes, compute
+          # its hash and append this to the computed cache's key.
+          appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
 
-      - name: Configure, Build, and Test
+      - name: Install Packages
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: sudo apt-get update && sudo apt-get install gcovr lcov
+
+      - name: Run CMake
         uses: lukka/run-cmake@v10
         with:
           configurePreset: "ninja-multi-vcpkg"
-          configurePresetAdditionalArgs: '[`-DENABLE_TESTING=ON`]'
-          buildPreset: "ninja-multi-vcpkg-release"
+          configurePresetAdditionalArgs: '[`-DENABLE_TESTING=ON`, `${{ env.ADDITIONAL_ARGS }}`]'
+          buildPreset: "ninja-multi-vcpkg-debug"
           buildPresetAdditionalArgs: '[`--target unit_tests`, ` -j4`]'
-          testPreset: "ninja-multi-vcpkg-release"
+          testPreset: "ninja-multi-vcpkg-debug"
+
+      - name: Code Coverage
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

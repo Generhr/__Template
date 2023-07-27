@@ -4,6 +4,9 @@ on:
   push:
     branches: [main, master, dev]
     paths: [include/**, lib/**, src/**]
+  pull_request:
+    branches: [main, master, dev]
+    paths: [include/**, lib/**, src/**]
 
 concurrency:
   group: documentation

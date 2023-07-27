@@ -1,11 +1,11 @@
 var indexSectionsWithContent =
 {
-  0: "cghjmpu",
+  0: "cghjmprstu",
   1: "gu",
-  2: "gmpu",
-  3: "ghm",
-  4: "c",
-  5: "j"
+  2: "cgmpru",
+  3: "ghmt",
+  4: "j",
+  5: "cs"
 };
 
 var indexSectionNames =
@@ -14,8 +14,8 @@ var indexSectionNames =
   1: "namespaces",
   2: "files",
   3: "functions",
-  4: "variables",
-  5: "typedefs"
+  4: "typedefs",
+  5: "pages"
 };
 
 var indexSectionLabels =
@@ -24,7 +24,7 @@ var indexSectionLabels =
   1: "Namespaces",
   2: "Files",
   3: "Functions",
-  4: "Variables",
-  5: "Typedefs"
+  4: "Typedefs",
+  5: "Pages"
 };
 

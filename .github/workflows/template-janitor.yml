@@ -4,7 +4,7 @@ name: Template Janitor
 on:
   push:
     branches: [main, master, dev]
-    # Trigger only when changes are made to this workflow file.
+    # Trigger only when changes are made to this workflow file
     paths: [.github/workflows/template-janitor.yml]
 
 permissions:
@@ -18,17 +18,11 @@ jobs:
   template-cleanup:
     runs-on: ubuntu-latest
 
-    permissions:
-      # required for all workflows
-      security-events: write
-
-      # only required for workflows in private repositories
-      actions: read
-      contents: read
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          submodules: true
 
       - name: Get Repository Details
         run: |
@@ -80,13 +74,26 @@ jobs:
           rm .github/workflows/auto-clang-format.yml
           rm .github/workflows/template-janitor.yml
 
-      - name: Build
-        # Build it because something may have broken in the cpp/hpp files.
-        uses: github/codeql-action/autobuild@v2
+      - name: Get CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgDirectory: "${{ github.workspace }}/external/vcpkg"
+          vcpkgJsonGlob: "${{ github.workspace }}/vcpkg.json"
+
+      - name: Configure and Build
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: "ninja-multi-vcpkg"
+          # Build it because something may have broken in the cpp/hpp files.
+          buildPreset: "ninja-multi-vcpkg-release"
+          buildPresetAdditionalArgs: '[`--target "${{ env.SAFE_REPOSITORY_NAME }}"`, ` -j4`]'
 
       - name: Commit and Push Changes
         uses: EndBug/add-and-commit@v9
-        # Only commit and push if this is not a template project anymore.
+        # Only commit and push if we are not a template project anymore.
         if: fromJson(steps.get_repo_meta.outputs.data).is_template != true
         with:
           add: -A

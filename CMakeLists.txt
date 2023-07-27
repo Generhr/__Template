@@ -266,10 +266,11 @@ if(PROJECT_IS_TOP_LEVEL)
                 EXECUTABLE
                 ctest
                 EXCLUDE
-                "${CMAKE_CURRENT_SOURCE_DIR}/test/*"
                 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*"
                 "${CMAKE_CURRENT_SOURCE_DIR}/docs/*"
                 "${CMAKE_CURRENT_SOURCE_DIR}/external/*"
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
+                "${CMAKE_CURRENT_SOURCE_DIR}/test/*"
                 "${CMAKE_CURRENT_SOURCE_DIR}/build/*"
             )
         endif()

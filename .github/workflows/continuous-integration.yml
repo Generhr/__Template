@@ -33,9 +33,6 @@ jobs:
         with:
           vcpkgDirectory: "${{ github.workspace }}/external/vcpkg"
           vcpkgJsonGlob: "${{ github.workspace }}/vcpkg.json"
-          # Since the cache must be invalidated when content of the vcpkg.json file changes, compute
-          # its hash and append this to the computed cache's key.
-          appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
 
       - name: Install Packages
         if: ${{ matrix.os == 'ubuntu-latest' }}

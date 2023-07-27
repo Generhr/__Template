@@ -18,6 +18,14 @@ jobs:
   template-cleanup:
     runs-on: ubuntu-latest
 
+    permissions:
+      # required for all workflows
+      security-events: write
+
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -72,8 +80,8 @@ jobs:
           rm .github/workflows/auto-clang-format.yml
           rm .github/workflows/template-janitor.yml
 
-      # Build it because something may have broken in the cpp/hpp files.
       - name: Build
+        # Build it because something may have broken in the cpp/hpp files.
         uses: github/codeql-action/autobuild@v2
 
       - name: Commit and Push Changes

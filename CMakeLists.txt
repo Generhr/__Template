@@ -277,7 +277,7 @@ if(PROJECT_IS_TOP_LEVEL)
 
         add_library(TESTING_LIBRARY INTERFACE)
 
-        target_precompile_headers(TESTING_LIBRARY REUSE_FROM ${PROJECT_NAME})
+        target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
 
         set_target_properties(
             ${TESTING_LIBRARY}

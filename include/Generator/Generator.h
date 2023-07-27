@@ -7,4 +7,4 @@ namespace Generator {
     std::stringstream& generate(std::stringstream& stream, const int range);
 }
 
-#endif
+#endif  // GENERATOR_H

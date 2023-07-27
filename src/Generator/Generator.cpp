@@ -1,4 +1,4 @@
-#include "Generator/Generator.h"
+#include "Generator/generator.h"
 
 #include <algorithm>
 #include <numeric>

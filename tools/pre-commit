@@ -20,7 +20,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Run CMake tests using ctest
-cd C:\Users\Onimuru\Code\C++\__Template\build
+cd build
 ctest --output-on-failure -j4
 
 # Check the exit code of ctest

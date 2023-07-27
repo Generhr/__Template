@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "Generator/Generator.h"
+#include "Generator/generator.h"
 
 TEST(GeneratorTest, ReferenceCheck) {
     const int NumberOfElements = 10;

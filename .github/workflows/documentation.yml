@@ -3,16 +3,11 @@ name: Documentation
 on:
   push:
     branches: [main, master, dev]
-    tags:
-      - "*"
-  workflow_dispatch:
+    paths: [include/**, lib/**, src/**]
 
 concurrency:
   group: documentation
   cancel-in-progress: true
-
-env:
-  BUILD_TYPE: Debug
 
 jobs:
   deploy:
@@ -20,29 +15,34 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v2
-      - name: Install Packages
-
-        run: |
-          sudo apt-get install doxygen graphviz
-          pip install jinja2 Pygments
-
-      - name: Configure
-        run: cmake -H. -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_DOXYGEN=On
-
-      - name: Generate Doxygen Documentation
-        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target doxygen -j4
-
-      - name: Cache Build Directory
-        uses: actions/cache@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
         with:
-          path: build
-          key: cmake-build-documentation-${{ hashFiles('CMakeCache.txt') }}
+          submodules: true
+
+      - name: Get CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgDirectory: "${{ github.workspace }}/external/vcpkg"
+          vcpkgJsonGlob: "${{ github.workspace }}/vcpkg.json"
+
+      - name: Install Packages
+        run: sudo apt-get install doxygen graphviz
+
+      - name: Configure and Build
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: "ninja-multi-vcpkg"
+          configurePresetAdditionalArgs: '[`-DENABLE_DOXYGEN=ON`]'
+          buildPreset: "ninja-multi-vcpkg-release"
+          buildPresetAdditionalArgs: '[`--target doxygen`, ` -j4`]'
 
       #: https://github.com/peaceiris/actions-gh-pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{github.workspace}}/docs/html
+          publish_dir: ${{ github.workspace }}/docs/html

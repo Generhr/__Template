@@ -8,9 +8,9 @@ pre-commit
 
 # Check the exit code of the pre-commit command
 if [ $? -ne 0 ]; then
-  echo "pre-commit hook failed. Commit canceled."
+  echo "pre-commit hook failed. Commit cancelled."
 
-  # Restage modified files that were previously staged before canceling the commit
+  # Restage modified files that were previously staged before cancelling the commit
   modified_files=$(git diff --cached --name-only | grep -F "$pre_commit_staged_files")
   if [ -n "$modified_files" ]; then
     git add $modified_files
@@ -25,7 +25,7 @@ ctest --output-on-failure -j4
 
 # Check the exit code of ctest
 if [ $? -ne 0 ]; then
-  echo "CTest failed. Commit canceled."
+  echo "CTest failed. Commit cancelled."
 
   exit 1  # Exit with a non-zero code to cancel the commit
 fi

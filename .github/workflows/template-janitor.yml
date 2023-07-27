@@ -1,18 +1,17 @@
 # This workflow will cleanup everything unneeded from the template.
+
 name: Template Janitor
 
 on:
   push:
     branches: [main, master, dev]
-    # Trigger only when changes are made to this workflow file
-    paths: [.github/workflows/template-janitor.yml]
+    paths: [.github/workflows/template-janitor.yml] # Trigger only when changes are made to this workflow file.
 
 permissions:
   contents: write
 
 env:
-  # Path to the template files
-  TEMPLATES_PATH: ".github/template"
+  TEMPLATES_PATH: ".github/template" # Path to the template files.
 
 jobs:
   template-cleanup:
@@ -42,18 +41,18 @@ jobs:
 
       - name: Sanitize Repository Name
         run: |
-          # Hyphens and dots are forbidden in c++ identifiers so use underscores instead.
+          # Hyphens and dots are forbidden in c++ identifiers so use underscores instead:
           SAFE_REPOSITORY_NAME=$(echo ${{ env.REPOSITORY_NAME }} | sed "s/-/_/g" | sed "s/\./_/g" )
           echo "SAFE_REPOSITORY_NAME=$SAFE_REPOSITORY_NAME" >> $GITHUB_ENV
 
       - name: Substitute Placeholders
         run: |
-          # Replace placeholders in CMakeLists.txt and source files with values pulled from the new repository.
+          # Replace placeholders in CMakeLists.txt and source files with values pulled from the new repository:
           find include src test cmake -type f -exec sed -i "s|__Name|${{ env.SAFE_REPOSITORY_NAME }}|g" CMakeLists.txt {} +
           sed -i "s|__Description|${{ fromJson(steps.get_repo_meta.outputs.data).description }}|g" CMakeLists.txt
           sed -i "s|__Url|${{ fromJson(steps.get_repo_meta.outputs.data).html_url }}|g" CMakeLists.txt
 
-          # Fill in placeholders of readme and move it into place.
+          # Fill in placeholders of readme and move it into place:
           sed -i "s|__Owner|${{ env.REPOSITORY_OWNER }}|g" ${{ env.TEMPLATES_PATH }}/README.md
           sed -i "s|__Name|${{ env.REPOSITORY_NAME }}|g" ${{ env.TEMPLATES_PATH }}/README.md
           sed -i "s|__Description|${{ fromJson(steps.get_repo_meta.outputs.data).description }}|g" ${{ env.TEMPLATES_PATH }}/README.md
@@ -64,13 +63,13 @@ jobs:
 
       - name: Remove Unwanted Files
         run: |
-          # Use a removal list to remove files to avoid making changes to this workflow. No tests needed as this will fail if any file from the list is missing or misspelled.
+          # Use a removal list to remove files to avoid making changes to this workflow. No tests needed as this will fail if any file from the list is missing or misspelled:
           xargs rm -r < ${{ env.TEMPLATES_PATH }}/removal-list
 
-          # Remove the template directory
+          # Remove the template directory:
           rm -r ${{ env.TEMPLATES_PATH }}
 
-          # Remove the auto-clang-format and template-janitor workflows.
+          # Remove the auto-clang-format and template-janitor workflows:
           rm .github/workflows/auto-clang-format.yml
           rm .github/workflows/template-janitor.yml
 
@@ -83,18 +82,18 @@ jobs:
           vcpkgDirectory: "${{ github.workspace }}/external/vcpkg"
           vcpkgJsonGlob: "${{ github.workspace }}/vcpkg.json"
 
-      - name: Configure and Build
+      - name: Run vcpkg
         uses: lukka/run-cmake@v10
         with:
           configurePreset: "ninja-multi-vcpkg"
-          # Build it because something may have broken in the cpp/hpp files.
+          # Build it because something may have broken in the cpp/hpp files:
           buildPreset: "ninja-multi-vcpkg-release"
           buildPresetAdditionalArgs: '[`--target "${{ env.SAFE_REPOSITORY_NAME }}"`, ` -j4`]'
 
-      - name: Commit and Push Changes
+      # Only commit and push if this is not a template project anymore:
+      - if: fromJson(steps.get_repo_meta.outputs.data).is_template != true
+        name: Commit and Push Changes
         uses: EndBug/add-and-commit@v9
-        # Only commit and push if we are not a template project anymore.
-        if: fromJson(steps.get_repo_meta.outputs.data).is_template != true
         with:
           add: -A
           author_name: Template Janitor

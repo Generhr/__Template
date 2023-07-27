@@ -28,14 +28,14 @@ jobs:
       - name: Get CMake
         uses: lukka/get-cmake@latest
 
-      - name: Setup vcpkg
+      - name: Run vcpkg
         uses: lukka/run-vcpkg@v10
         with:
           vcpkgDirectory: "${{ github.workspace }}/external/vcpkg"
           vcpkgJsonGlob: "${{ github.workspace }}/vcpkg.json"
 
-      - name: Install Packages
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - if: ${{ matrix.os == 'ubuntu-latest' }}
+        name: Install Packages
         run: sudo apt-get update && sudo apt-get install gcovr lcov
 
       - name: Run CMake
@@ -47,8 +47,6 @@ jobs:
           buildPresetAdditionalArgs: '[`--target unit_tests`, ` -j4`]'
           testPreset: "ninja-multi-vcpkg-debug"
 
-      - name: Code Coverage
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ matrix.os == 'ubuntu-latest' }}
+        name: Code Coverage
+        run: bash <(curl -s https://codecov.io/bash)

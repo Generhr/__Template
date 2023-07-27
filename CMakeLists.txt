@@ -258,6 +258,8 @@ if(PROJECT_IS_TOP_LEVEL)
         if(ENABLE_CODE_COVERAGE)
             include(cmake/CodeCoverage.cmake)
 
+            append_coverage_compiler_flags()
+
             setup_target_for_coverage_lcov(
                 NAME
                 coverage

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['generate_34',['generate',['../namespaceGenerator.html#a4804550498cc275c72c455e3e34209a2',1,'Generator']]]
+  ['add_31',['add',['../calc_8h.html#a6c983b2fd73330aea935bbc91933a0ba',1,'add(int op1, int op2):&#160;calc.cpp'],['../src_2Utility_2calc_8cpp.html#a6c983b2fd73330aea935bbc91933a0ba',1,'add(int op1, int op2):&#160;calc.cpp']]]
 ];

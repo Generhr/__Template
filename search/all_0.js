@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['c_2b_2b_20project_20template_0',['C++ Project Template',['../index.html',1,'']]],
-  ['cmake_20tutorial_1',['CMake Tutorial',['../md_README_cmake.html',1,'']]],
-  ['config_2eh_2',['config.h',['../config_8h.html',1,'']]]
+  ['add_0',['add',['../calc_8h.html#a6c983b2fd73330aea935bbc91933a0ba',1,'add(int op1, int op2):&#160;calc.cpp'],['../src_2Utility_2calc_8cpp.html#a6c983b2fd73330aea935bbc91933a0ba',1,'add(int op1, int op2):&#160;calc.cpp']]]
 ];

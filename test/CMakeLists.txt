@@ -9,10 +9,10 @@ project(${CMAKE_PROJECT_NAME}Tests LANGUAGES CXX C)
 file(GLOB_RECURSE TEST_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 if(USE_GOOGLE_MOCK)
-    set(GOOGLE_MOCK_LIBRARIES GTest::gmock GTest::gmock_main)
+    set(GOOGLE_MOCK_LIBRARIES GTest::gmock_main)
 endif()
 
-set(TEST_LIBRARIES GTest::gtest GTest::gtest_main # `gtest_main` forgoes the need for a unit test with a `main()` function and to then include each test file within that unit test.
+set(TEST_LIBRARIES GTest::gtest_main # `gtest_main` forgoes the need for a unit test with a `main()` function and to then include each test file within that unit test.
                    ${GOOGLE_MOCK_LIBRARIES} TESTING_LIBRARY
 )
 
@@ -21,13 +21,7 @@ foreach(TEST_FILE ${TEST_FILES})
 
     add_executable(${TEST_NAME} ${TEST_FILE})
 
-    target_link_libraries(${TEST_NAME} PRIVATE ${TEST_LIBRARIES})
-
-    gtest_discover_tests(
-        ${TEST_NAME}
-        PROPERTIES
-        TIMEOUT 10
-    ) #? CMake 3.10+
+    message(STATUS "Created ${TEST_NAME} binary")
 
     set_target_properties(
         ${TEST_NAME}
@@ -39,11 +33,23 @@ foreach(TEST_FILE ${TEST_FILES})
                    EXCLUDE_FROM_DEFAULT_BUILD TRUE
     )
 
+    message(STATUS "* using standard C++${CMAKE_CXX_STANDARD}")
+
     if(ENABLE_WARNINGS)
         target_set_warnings(${TEST_NAME})
     endif()
 
-    set(TEST_NAMES ${TEST_NAMES} ${TEST_NAME}) # Append `TEST_NAME` to `TEST_NAMES`.
+    target_link_libraries(${TEST_NAME} PRIVATE ${TEST_LIBRARIES})
+
+    gtest_discover_tests(
+        ${TEST_NAME}
+        PROPERTIES
+        TIMEOUT 10
+    ) #? CMake 3.10+
+
+    list(APPEND TEST_NAMES "${TEST_NAME}")
 endforeach()
 
 add_custom_target(unit_tests DEPENDS ${TEST_NAMES})
+
+message(STATUS "Created `unit_tests` build target that will build all tests found in ${CMAKE_CURRENT_SOURCE_DIR} (${TEST_NAMES})")

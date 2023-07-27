@@ -1,3 +1,9 @@
+// #define FMT_HEADER_ONLY // may need this line
+
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
 #include <cxxopts.hpp>
@@ -7,8 +13,6 @@
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
-
-const int c = 100;
 
 int main(int argc, char** argv) {
     std::cout << "JSON: " << NLOHMANN_JSON_VERSION_MAJOR << "." << NLOHMANN_JSON_VERSION_MINOR << "."
@@ -67,7 +71,7 @@ int main(int argc, char** argv) {
     const auto parsed_data = json::parse(ifs);
 
     if (verbose) {
-        const auto& name = parsed_data["name"];
+        const auto name = parsed_data["name"];
         fmt::print("Name: {}\n", name);
     }
 

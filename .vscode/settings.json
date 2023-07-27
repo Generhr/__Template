@@ -112,31 +112,14 @@
     "codesnap.showWindowControls": false,
     "codesnap.shutterAction": "copy",
     //==============  CMake  ======================================================//
-    "cmake.additionalKits": [
-        "C:/Program Files/CMake/bin/cmake.exe"
-    ],
     "cmake.buildTask": false, // Build using tasks.json instead of internal process.
     "cmake.clearOutputBeforeBuild": true,
-    "cmake.cmakePath": "C:/Program Files/CMake/bin/cmake.exe",
     "cmake.configureOnEdit": true,
     "cmake.configureOnOpen": false,
-    "cmake.configureSettings": {
-        //"CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/external/vcpkg/scripts/buildsystems/vcpkg.cmake"
-    },
-    "cmake.ctestArgs": [], // Arguments to pass to CTest.
-    "cmake.debugConfig": {
-        "args": [
-            // "--verbose",
-            // "true",
-            // "--filename",
-            // "${workspaceFolder}/app/test.json"
-        ],
-        "externalConsole": true
-    },
-    "cmake.generator": "Visual Studio 17 2022",
     "cmake.ignoreCMakeListsMissing": false,
     "cmake.launchBehavior": "newTerminal",
     "cmake.showSystemKits": false,
+    "cmake.useCMakePresets": "always",
     //=========== CMake Format ===================================================//
     "cmakeFormat.args": [
         "--config-files=C:/Users/Onimuru/Code/C++/__Template/.cmake-format.yaml",

@@ -1,11 +1,8 @@
 include(CMakeDependentOption)
 
-option(USE_CONAN "Enable the Conan package manager for this project." OFF)
-option(USE_VCPKG "Enable the vcpkg package manager for this project." ON)
-
-option(ENABLE_DOXYGEN "Enable to create a doxygen build target (doxygen)." OFF)
-
-option(ENABLE_CODE_ANALYSIS "Enable to create a static analysis build target (cppcheck)." ON)
+option(ENABLE_CPPCHECK "Enable static analysis with cppcheck." OFF)
+option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy." OFF)
+option(ENABLE_INCLUDE_WHAT_YOU_USE "Enable static analysis with include what you use." OFF)
 
 option(ENABLE_SANITIZE_ADDR "Enable address sanitize." OFF)
 option(ENABLE_SANITIZE_UNDEF "Enable undefined sanitize." OFF)
@@ -17,7 +14,9 @@ cmake_dependent_option(ENABLE_IPO "Enable Interprocedural Optimization, aka Link
 option(ENABLE_WARNINGS "Enable to add compiler warnings." ON)
 option(ENABLE_WARNINGS_AS_ERRORS "Enable to treat compiler warnings as errors." OFF)
 
-option(VERBOSE_OUTPUT "Enable verbose output, allowing for a better understanding of each step taken." ON)
+option(ENABLE_DOXYGEN "Enable to create a doxygen build target (doxygen)." ON)
+
+option(VERBOSE_OUTPUT "Enable verbose output, allowing for a better understanding of each step taken." OFF)
 
 option(BUILD_HEADERS_ONLY "Build the project as a header-only library." OFF)
 option(BUILD_EXECUTABLE "Build the project as an executable, rather than a library." ON)
@@ -29,10 +28,9 @@ option(ENABLE_CODE_COVERAGE "Enable to create a Code Coverage build target (cove
 
 if(NOT PROJECT_IS_TOP_LEVEL)
     mark_as_advanced(
-        USE_CONAN
-        USE_VCPKG
-        ENABLE_DOXYGEN
-        ENABLE_CODE_ANALYSIS
+        ENABLE_CPPCHECK
+        ENABLE_CLANG_TIDY
+        ENABLE_INCLUDE_WHAT_YOU_USE
         ENABLE_SANITIZE_ADDR
         ENABLE_SANITIZE_UNDEF
         ENABLE_SANITIZE_LEAK
@@ -40,6 +38,7 @@ if(NOT PROJECT_IS_TOP_LEVEL)
         ENABLE_IPO
         ENABLE_WARNINGS
         ENABLE_WARNINGS_AS_ERRORS
+        ENABLE_DOXYGEN
         VERBOSE_OUTPUT
         BUILD_HEADERS_ONLY
         BUILD_EXECUTABLE

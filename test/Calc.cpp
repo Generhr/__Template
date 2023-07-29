@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
+#include <gtest/gtest.h>  // for Test, ASSERT_EQ, TestInfo (ptr only), TEST
 
-#include "Utility/calc.h"
+#include "Utility/Calc.h"  // for add, sub
 
 TEST(CalcTest, Add) {
     ASSERT_EQ(2, add(1, 1));

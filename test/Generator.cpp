@@ -1,10 +1,11 @@
-#include <gtest/gtest.h>
-#include <memory>
-#include <numeric>
-#include <string>
-#include <vector>
+#include <numeric>        // for iota
+#include <string>         // for allocator, getline, stoi
+#include <type_traits>    // for addressof
+#include <vector>         // for vector, _Vector_const_iterator, _Vector_ite...
+#include <xstring>        // for string
+#include "gtest/gtest.h"  // for Test, TestInfo (ptr only), TEST
 
-#include "Generator/generator.h"
+#include "Generator/Generator.h"  // for generate
 
 TEST(GeneratorTest, ReferenceCheck) {
     const int NumberOfElements = 10;
@@ -40,7 +41,6 @@ TEST(GeneratorTest, Shuffle) {
 
     EXPECT_NE(buffer_A.str(), buffer_B.str());
 }
-
 
 TEST(GeneratorTest, CheckSum) {
     const int NumberOfElements = 50;

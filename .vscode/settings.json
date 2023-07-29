@@ -39,7 +39,9 @@
     "git.autofetch": true,
     "git.confirmSync": false,
     "git.enableSmartCommit": true,
+    "json.schemaDownload.enable": true,
     "markdown.validate.enabled": true,
+    "output.smartScroll.enabled": false,
     "terminal.integrated.defaultProfile.windows": "Command Prompt",
     "terminal.integrated.enableMultiLinePasteWarning": false,
     "workbench.editor.untitled.hint": "hidden",
@@ -95,12 +97,10 @@
     },
     //==============  C/C++  ======================================================//
     "C_Cpp.clang_format_sortIncludes": true,
-    "C_Cpp.codeAnalysis.clangTidy.enabled": true,
-    "C_Cpp.codeAnalysis.runAutomatically": true,
     "C_Cpp.configurationWarnings": "disabled",
     "C_Cpp.default.browse.limitSymbolsToIncludedHeaders": false,
-    "C_Cpp.default.cStandard": "c17",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.cStandard": "c17",
     "C_Cpp.default.cppStandard": "c++23",
     "C_Cpp.formatting": "clangFormat",
     //=========== C/C++ Runner ===================================================//

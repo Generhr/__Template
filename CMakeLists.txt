@@ -124,6 +124,10 @@ add_subdirectory(external EXCLUDE_FROM_ALL)
 
 set(PRECOMPILED_HEADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
 
+if(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang") #~ https://gitlab.kitware.com/cmake/cmake/-/issues/22081
+    set(CMAKE_CXX_COMPILE_OPTIONS_USE_PCH -Xclang -include -Xclang "${PRECOMPILED_HEADER_LIST}")
+endif()
+
 # Note: globbing sources is considered bad practice as CMake's generators may not detect new files
 # automatically. Keep that in mind when changing files, or explicitly mention them here.
 
@@ -144,7 +148,7 @@ set(SOURCE_LIST # Note: Add here any file you want to add manually which is not 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
 
 foreach(SOURCE_FILE ${SOURCE_FILES})
-    if(NOT "${SOURCE_FILE}" MATCHES ".*/main.cpp")
+    if(NOT "${SOURCE_FILE}" MATCHES ".*/Main.cpp")
         list(APPEND SOURCE_LIST ${SOURCE_FILE})
     endif()
 endforeach()
@@ -164,11 +168,11 @@ if(BUILD_HEADERS_ONLY)
         message(STATUS "Created ${PROJECT_NAME} interface library")
     endif()
 elseif(BUILD_EXECUTABLE)
-    add_executable(${PROJECT_NAME} "src/main.cpp" "${SOURCE_LIST}" "${HEADER_LIST}") # Note: Including header files here helps IDEs but is not required.
+    add_executable(${PROJECT_NAME} "src/Main.cpp" "${SOURCE_LIST}" "${HEADER_LIST}") # Note: Including header files here helps IDEs but is not required.
 
     if(VERBOSE_OUTPUT)
         message(STATUS "Created ${PROJECT_NAME} binary with the following sources:")
-        message(STATUS "* ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
+        message(STATUS "* ${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp")
 
         foreach(SOURCE IN LISTS SOURCE_LIST)
             message(STATUS "* ${SOURCE}")
@@ -267,11 +271,11 @@ if(PROJECT_IS_TOP_LEVEL)
                 ctest
                 EXCLUDE
                 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*"
-                "${CMAKE_CURRENT_SOURCE_DIR}/docs/*"
                 "${CMAKE_CURRENT_SOURCE_DIR}/external/*"
-                "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp"
                 "${CMAKE_CURRENT_SOURCE_DIR}/test/*"
                 "${CMAKE_CURRENT_SOURCE_DIR}/build/*"
+                "${CMAKE_CURRENT_SOURCE_DIR}/docs/*"
             )
         endif()
 

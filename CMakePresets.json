@@ -1,8 +1,8 @@
 {
-    "version": 3,
+    "version": 7,
     "cmakeMinimumRequired": {
         "major": 3,
-        "minor": 20,
+        "minor": 27,
         "patch": 0
     },
     "configurePresets": [
@@ -11,12 +11,9 @@
             "displayName": "Ninja Multi-Config",
             "description": "Configure with vcpkg toolchain and generate Ninja project files for all configurations",
             "generator": "Ninja Multi-Config",
+            "toolchainFile": "${sourceDir}/external/vcpkg/scripts/buildsystems/vcpkg.cmake",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
-                "CMAKE_TOOLCHAIN_FILE": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/external/vcpkg/scripts/buildsystems/vcpkg.cmake"
-                },
                 "CMAKE_CONFIGURATION_TYPES": "Debug;Release;DebugCoverage",
                 "CMAKE_DEFAULT_BUILD_TYPE": "Debug"
             }
@@ -28,14 +25,16 @@
             "configurePreset": "ninja-multi-vcpkg",
             "displayName": "Build ninja-multi-vcpkg-debug",
             "description": "Build ninja-multi-vcpkg Debug configuration",
-            "configuration": "Debug"
+            "configuration": "Debug",
+            "jobs": 4
         },
         {
             "name": "ninja-multi-vcpkg-release",
             "configurePreset": "ninja-multi-vcpkg",
             "displayName": "Build ninja-multi-vcpkg-release",
             "description": "Build ninja-multi-vcpkg Release configuration",
-            "configuration": "Release"
+            "configuration": "Release",
+            "jobs": 4
         }
     ],
     "testPresets": [
@@ -46,10 +45,13 @@
             "displayName": "Run CTest tests on Ninja Configuration for Debug Build",
             "execution": {
                 "noTestsAction": "error",
-                "stopOnFailure": true
+                "scheduleRandom": true,
+                "stopOnFailure": true,
+                "jobs": 4
             },
             "output": {
-                "outputOnFailure": true
+                "outputOnFailure": true,
+                "verbosity": "default"
             }
         },
         {
@@ -59,10 +61,13 @@
             "displayName": "Run CTest tests on Ninja Configuration for Release Build",
             "execution": {
                 "noTestsAction": "error",
-                "stopOnFailure": true
+                "scheduleRandom": true,
+                "stopOnFailure": true,
+                "jobs": 4
             },
             "output": {
-                "outputOnFailure": true
+                "outputOnFailure": true,
+                "quiet": true
             }
         }
     ]

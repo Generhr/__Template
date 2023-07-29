@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['json_10',['json',['../main_8cpp.html#ab701e3ac61a85b337ec5c1abaad6742d',1,'main.cpp']]]
+  ['debug_5fenabled_21',['debug_enabled',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#ab0fd7674aeb73be7fff805fd19231c1b',1,'clang-tidy-cache::ClangTidyCacheOpts']]],
+  ['dump_5fenabled_22',['dump_enabled',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a22fbccd90227cbfc6fa933a35475e689',1,'clang-tidy-cache::ClangTidyCacheOpts']]]
 ];

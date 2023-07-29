@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['sub_34',['sub',['../calc_8h.html#a5121b144c827e4785966d7cec78b51cf',1,'sub(int op1, int op2):&#160;calc.cpp'],['../src_2Utility_2calc_8cpp.html#a5121b144c827e4785966d7cec78b51cf',1,'sub(int op1, int op2):&#160;calc.cpp']]]
+  ['debug_5fenabled_98',['debug_enabled',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#ab0fd7674aeb73be7fff805fd19231c1b',1,'clang-tidy-cache::ClangTidyCacheOpts']]],
+  ['dump_5fenabled_99',['dump_enabled',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a22fbccd90227cbfc6fa933a35475e689',1,'clang-tidy-cache::ClangTidyCacheOpts']]]
 ];

@@ -2,7 +2,6 @@
 #include <string>         // for allocator, getline, stoi
 #include <type_traits>    // for addressof
 #include <vector>         // for vector, _Vector_const_iterator, _Vector_ite...
-#include <xstring>        // for string
 #include "gtest/gtest.h"  // for Test, TestInfo (ptr only), TEST
 
 #include "Generator/Generator.h"  // for generate

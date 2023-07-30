@@ -142,6 +142,89 @@
         "error",
         "warning"
     ],
+    /============  Highlight  ====================================================//
+    //============  Highlight  ====================================================//
+    "highlight.decorations": {
+        "rangeBehavior": 3
+    },
+    "highlight.maxMatches": 500,
+    "highlight.regexes": {
+        "([(//)#]+[=-]+)(.*?)([=-]+[(//)#]+)": {
+            "decorations": [ //: https://code.visualstudio.com/api/references/vscode-api#DecorationRenderOptions
+                {
+                    "color": "SkyBlue", // Decoration options to apply to the first capturing group, in this case "[;/]+=+".
+                    "opacity": "0.5"
+                },
+                {
+                    //"backgroundColor": "Black",
+                    //"border": "1px Solid SkyBlue", // Decoration options to apply to the second capturing group, in this case ".*?".
+                    "color": "Beige",
+                    //"overviewRulerColor": "SkyBlue"
+                },
+                {
+                    "color": "SkyBlue", // Decoration options to apply to the third capturing group, in this case "=+[;/]+".
+                    "opacity": "0.5"
+                }
+            ],
+        },
+        "(`.*?`(?=([^\"]*\"[^\"]*\")*[^\"]*$))": {
+            "decorations": [
+                {
+                    "color": "Grey",
+                    "backgroundColor": "transparent" // text `code` // other text ** special `code` text ** // "`n string `n"
+                }
+            ]
+        },
+        "(\\*{2}\\s.*?\\s\\*{2})": { //** special text ** normal text // number**2 + number**2
+            "decorations": [
+                {
+                    "color": "Gold",
+                    "backgroundColor": "transparent"
+                }
+            ]
+        },
+        "((#|\/\/)\\*\\s.*?)(?:\\s(#|\/\/)\\S?\\s|$)": { //* text ** special text ** text // other text
+            "decorations": [
+                {
+                    "color": "#B59E1B",
+                    "backgroundColor": "transparent"
+                }
+            ]
+        },
+        "((#|\/\/)!\\s.*?)(?:\\s(#|\/\/)\\S?\\s|$)": { //! text ** special text ** text // other text
+            "decorations": [
+                {
+                    "color": "#FF6961",
+                    "backgroundColor": "transparent"
+                }
+            ]
+        },
+        "((#|\/\/)\\?\\s.*?)(?:\\s(#|\/\/)\\S?\\s|$)": { //? text ** special text ** text // other text
+            "decorations": [
+                {
+                    "color": "#3498DB",
+                    "backgroundColor": "transparent"
+                }
+            ]
+        },
+        "((#|\/\/):\\s.*?)(?:\\s(#|\/\/)\\S?\\s|$)": { //: text ** special text ** text //? other text
+            "decorations": [
+                {
+                    "color": "#474747",
+                    "backgroundColor": "transparent"
+                }
+            ]
+        },
+        "((#|\/\/)~\\s.*?)(?:\\s(#|\/\/)\\S?\\s|$)": { //~ text ** special text ** text //! other text
+            "decorations": [
+                {
+                    "color": "#FF8C00",
+                    "backgroundColor": "transparent"
+                }
+            ]
+        },
+    },
+    "highlight.regexFlags": "gmi",
     //===========  IntelliCode  ===================================================//
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     //========= Output Colorizer =================================================//

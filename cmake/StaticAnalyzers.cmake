@@ -1,5 +1,5 @@
 macro(enable_cppcheck)
-    find_program(CPPCHECK NAMES "cppcheck")
+    find_program(CPPCHECK cppcheck)
 
     if(CPPCHECK)
         message(STATUS "'${CPPCHECK}' found and enabled")
@@ -26,13 +26,15 @@ macro(enable_cppcheck)
                 ${CPPCHECK}
                 "--enable=warning,style,performance,portability" # Enable additional checks.
                 "--std=c++${CMAKE_CXX_STANDARD}" # Set standard.
-                #"--project=compile_commands.json" # (Optional) Specifices the json file created by MAKE_EXPORT_COMPILE_COMMANDS which outlines the code structure.
-                "--force" # Force checking of files that have a lot of configurations. Error is printed if such a file is found so there is no reason to use this by default. If used together with `--max-configs=`, the last option is the one that is effective.
+                #"--project=compile_commands.json" # (Optional) Specifices the json file created by MAKE_EXPORT_COMPILE_COMMANDS which outlines the code structure (see: https://github.com/danmar/cppcheck/blob/main/man/manual.md#cmake).
                 "--inconclusive" # Allow that Cppcheck reports even though the analysis is inconclusive. There are false positives with this option. Each result must be carefully investigated before you know if it is good or bad.
                 "--suppressions-list=${CMAKE_CURRENT_SOURCE_DIR}/cppcheck-suppressions.txt" # (Optional) Suppress warnings listed in the file. The format of is: `[error id]:[filename]:[line]`. The `[filename]` and `[line]` are optional. `[error id]` may be `*` to suppress all warnings (for a specified file or files). `[filename]` may contain the wildcard characters `*` or `?`.
                 "--inline-suppr" # (Optional) Enable inline suppressions. Use them by placing comments in the form: `// cppcheck-suppress memleak` before the line to suppress.
                 "--template=${CPPCHECK_TEMPLATE}" # Format the error messages (Pre-defined templates: gcc, vs).
-                #"--quiet" # (Optional) Only print something when there is an error.
+                "--cppcheck-build-dir=build" # (Optional) Using a Cppcheck build folder is not mandatory but it is recommended (see: https://github.com/danmar/cppcheck/blob/main/man/manual.md#cppcheck-build-dir).
+                #"--check-level=exhaustive" # Exhaustive checking level should be useful for scenarios where you can wait for results.
+                "--performance-valueflow-max-if-count=60" # (Optional) Adjusts the max count for number of if in a function.
+                "--quiet" # (Optional) Only print something when there is an error.
                 #"--verbose"  # (Optional) More detailed error reports.
                 "-j ${PROCESSOR_COUNT}" # (Optional) Start x amount of threads to do the checking work.
             )

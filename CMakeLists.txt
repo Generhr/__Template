@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.16...3.27 FATAL_ERROR) #? 3.16 - target_precomp
 
 include(cmake/SafeGuards.cmake)
 
+#set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
+
 #==========  Project Details  ==================================================#
 
 # Note: update this with your new project's details.
@@ -83,7 +85,7 @@ endif()
 
 if(ENABLE_IPO)
     include(cmake/InterproceduralOptimization.cmake)
-    enable_ipo()
+    #enable_ipo()
 endif()
 
 include(cmake/Warnings.cmake)

@@ -19,7 +19,7 @@ on:
     branches: [main, master, dev]
     paths: [include/**, lib/**, src/**]
   schedule:
-    - cron: '0 8 * * 0'
+    - cron: "0 8 * * 0"
 
 jobs:
   CodeQL-Build:

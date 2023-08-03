@@ -1,31 +1,22 @@
 {
     //============== Native ======================================================//
-    "debug.onTaskErrors": "debugAnyway",
-    "editor.bracketPairColorization.enabled": false,
-    "editor.formatOnSave": true,
-    "editor.renderWhitespace": "trailing",
     "editor.rulers": [
         120
     ],
-    "editor.suggestSelection": "first",
-    "editor.tabSize": 4,
-    "explorer.compactFolders": false,
-    "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false,
-    "explorer.copyRelativePathSeparator": "/",
-    "files.autoSave": "off", // This will build the project when you switch to another window (annoying).
     "files.associations": {
-        "*.gpj": "jsonc",
-        "*.gvw": "jsonc",
         "*.py": "python",
         "*.pylintrc": "ini",
+        "*.gpj": "jsonc",
+        "*.gvw": "jsonc",
         "*.pyx": "cython",
         ".clang*": "yaml",
         "chrono": "cpp",
         "iomanip": "cpp",
         "memory": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "type_traits": "cpp"
     },
+    "files.autoSave": "off", // This will build the project when you switch to another window (annoying).
     "files.exclude": {
         "node_modules/**/*": true,
         "**/.classpath": true,
@@ -33,74 +24,38 @@
         "**/.settings": true,
         "**/.factorypath": true
     },
-    "files.insertFinalNewline": true,
-    "files.trimFinalNewlines": true,
-    "files.trimTrailingWhitespace": true,
-    "git.autofetch": true,
-    "git.confirmSync": false,
-    "git.enableSmartCommit": true,
-    "json.schemaDownload.enable": true,
-    "markdown.validate.enabled": true,
-    "output.smartScroll.enabled": false,
-    "terminal.integrated.defaultProfile.windows": "Command Prompt",
-    "terminal.integrated.enableMultiLinePasteWarning": false,
-    "workbench.editor.untitled.hint": "hidden",
     "workbench.editorAssociations": {
         "*.md": "vscode.markdown.preview.editor",
         "*.svg": "svgPreviewer.customEditor"
     },
-    "workbench.startupEditor": "none",
     "[cmake]": {
-        "editor.formatOnSave": true,
         "editor.defaultFormatter": "cheshirekow.cmake-format",
         "editor.quickSuggestions": {
             "strings": true
         }
     },
     "[c]": {
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "ms-vscode.cpptools"
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.semanticHighlighting.enabled": true,
+        "editor.suggest.insertMode": "replace",
+        "editor.wordBasedSuggestions": false
     },
     "[cpp]": {
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "ms-vscode.cpptools"
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.semanticHighlighting.enabled": true,
+        "editor.suggest.insertMode": "replace",
+        "editor.wordBasedSuggestions": false
     },
-    "[json]": {
-        "editor.formatOnSave": false,
-        "editor.defaultFormatter": "vscode.json-language-features"
-    },
-    "[jsonc]": {
-        "editor.formatOnSave": false
-    },
-    "[markdown]": {
-        "files.trimTrailingWhitespace": false,
-        "editor.formatOnSave": false,
-        "editor.defaultFormatter": "yzhang.markdown-all-in-one",
-        "editor.wordWrap": "wordWrapColumn"
-    },
-    "[plaintext]": {
-        "editor.wordWrap": "wordWrapColumn",
-        "editor.wordWrapColumn": 120
-    },
-    "[yaml]": {
-        "diffEditor.ignoreTrimWhitespace": false,
-        "editor.autoIndent": "keep",
-        "editor.defaultFormatter": "redhat.vscode-yaml",
-        "editor.formatOnSave": false,
-        "editor.insertSpaces": true,
-        "editor.quickSuggestions": {
-            "other": true,
-            "comments": false,
-            "strings": true
-        },
-        "editor.tabSize": 2,
+    "[cuda-cpp]": {
+        "editor.semanticHighlighting.enabled": true,
+        "editor.suggest.insertMode": "replace",
+        "editor.wordBasedSuggestions": false
     },
     //==============  C/C++  ======================================================//
-    "C_Cpp.clang_format_sortIncludes": true,
     "C_Cpp.configurationWarnings": "disabled",
     "C_Cpp.default.browse.limitSymbolsToIncludedHeaders": false,
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "C_Cpp.default.cStandard": "c17",
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "C_Cpp.default.cppStandard": "c++23",
     "C_Cpp.formatting": "clangFormat",
     //=========== C/C++ Runner ===================================================//
@@ -112,7 +67,7 @@
     "codesnap.showWindowControls": false,
     "codesnap.shutterAction": "copy",
     //==============  CMake  ======================================================//
-    "cmake.buildTask": false, // Build using tasks.json instead of internal process.
+    "cmake.buildTask": false, //* Build using tasks.json instead of internal process
     "cmake.clearOutputBeforeBuild": true,
     "cmake.configureOnEdit": true,
     "cmake.configureOnOpen": false,
@@ -127,6 +82,10 @@
     ],
     //====== CMake Language Support ==============================================//
     "cmake.languageSupport.enableFileAPI": true,
+    //======== Code Spell Checker ================================================//
+    "cSpell.dictionaries": [
+        "cpp"
+    ],
     //=  Doxygen Documentation Generator  =========================================//
     "doxdocgen.cpp.tparamTemplate": "@tparam {param} ",
     "doxdocgen.file.fileTemplate": "@file {name}",
@@ -142,7 +101,9 @@
         "error",
         "warning"
     ],
-    /============  Highlight  ====================================================//
+    "errorLens.fontFamily": "'Fira Code Retina','Input Mono Condensed','Input Mono Compressed'",
+    "errorLens.fontSize": 15,
+    "errorLens.fontWeight": 300,
     //============  Highlight  ====================================================//
     "highlight.decorations": {
         "rangeBehavior": 3
@@ -224,7 +185,7 @@
             ]
         },
     },
-    "highlight.regexFlags": "gmi",
+    "highlight.regexFlags": "gm",
     //===========  IntelliCode  ===================================================//
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     //========= Output Colorizer =================================================//
@@ -255,9 +216,4 @@
         "*.cc",
         "*.c(pp)?"
     ],
-    //===============  WSL  =======================================================//
-    "remote.WSL.fileWatcher.polling": true,
-    //=============== YAML =======================================================//
-    "yaml.format.enable": true,
-    "yaml.format.printWidth": 120
 }

@@ -5,13 +5,13 @@ name: Template Janitor
 on:
   push:
     branches: [main, master, dev]
-    paths: [.github/workflows/template-janitor.yml] # Trigger only when changes are made to this workflow file.
+    paths: [.github/workflows/template-janitor.yml]  # Trigger only when changes are made to this workflow file.
 
 permissions:
   contents: write
 
 env:
-  TEMPLATES_PATH: ".github/template" # Path to the template files.
+  TEMPLATES_PATH: ".github/template"  # Path to the template files.
 
 jobs:
   template-cleanup:

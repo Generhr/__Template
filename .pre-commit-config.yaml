@@ -1,4 +1,4 @@
-fail_fast: false #: https://pre-commit.com/hooks.html
+fail_fast: false  #: https://pre-commit.com/hooks.html
 repos:
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.1

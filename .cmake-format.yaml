@@ -2,23 +2,23 @@ parse:
   additional_commands:
     cpmfindpackage:
       pargs:
-        nargs: '*'
+        nargs: "*"
         flags: []
       spelling: CPMFindPackage
       kwargs:
-        NAME: '*'
-        EXECUTABLE: '*'
-        DEPENDENCIES: '*'
+        NAME: "*"
+        EXECUTABLE: "*"
+        DEPENDENCIES: "*"
     setup_target_for_coverage_gcovr:
       kwargs:
-        NAME: '*'
-        EXECUTABLE: '*'
-        DEPENDENCIES: '*'
+        NAME: "*"
+        EXECUTABLE: "*"
+        DEPENDENCIES: "*"
     setup_target_for_coverage_gcovr_html:
       kwargs:
-        NAME: '*'
-        EXECUTABLE: '*'
-        DEPENDENCIES: '*'
+        NAME: "*"
+        EXECUTABLE: "*"
+        DEPENDENCIES: "*"
 format:
   dangle_parens: true
   line_ending: unix
@@ -28,5 +28,5 @@ format:
   tab_size: 4
 markup:
   enable_markup: false
-  bullet_char: '*'
+  bullet_char: "*"
   enum_char: .

@@ -13,9 +13,9 @@ jobs:
       - name: Clang Format
         uses: DoozyX/clang-format-lint-action@v0.13
         with:
-          source: '.'
-          exclude: './third_party ./external'
-          extensions: 'h,cpp,hpp'
+          source: "."
+          exclude: "./third_party ./external"
+          extensions: "h,cpp,hpp"
           clangFormatVersion: 12
           inplace: True
 
@@ -24,6 +24,6 @@ jobs:
         with:
           author_name: Clang Robot
           author_email: robot@example.com
-          message: ':art: Committing clang-format changes'
+          message: ":art: Committing clang-format changes"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

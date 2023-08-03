@@ -34,3 +34,4 @@ repos:
     hooks:
       - id: yamlfmt
         types: [yaml]
+        exclude: .clang-tidy

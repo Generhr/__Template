@@ -4,29 +4,27 @@ cmake_minimum_required(VERSION 3.16...3.27 FATAL_ERROR) #? 3.16 - target_precomp
 
 include(cmake/SafeGuards.cmake)
 
-#set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
-
 #==========  Project Details  ==================================================#
 
-# Note: update this with your new project's details.
+# NOTE: update this with your new project's details.
 
 project("__Name"
-        VERSION "0.1.0" # Note: Listing the version is nice here since it sets lots of useful variables.
+        VERSION "0.1.0" # NOTE: Listing the version is nice here since it sets lots of useful variables.
         DESCRIPTION "__Description"
         HOMEPAGE_URL "__Url"
-        LANGUAGES CXX C # Note: To support external libraries, it's good practice to list both CXX and C.
+        LANGUAGES CXX C # NOTE: To support external libraries, it's good practice to list both CXX and C.
 )
 
 #==========  CMake Variables  ==================================================#
 
 message(STATUS "\n-- Configuring CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n--")
 
-string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" PROJECT_IS_TOP_LEVEL) # Note: This variable is set by `project()` in CMake 3.21+.
+string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" PROJECT_IS_TOP_LEVEL) # NOTE: This variable is set by `project()` in CMake 3.21+.
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory:
 if(PROJECT_IS_TOP_LEVEL)
     if(NOT DEFINED CMAKE_CXX_STANDARD)
-        set(CMAKE_CXX_STANDARD # Note: GoogleTest requires at least C++14.
+        set(CMAKE_CXX_STANDARD # NOTE: GoogleTest requires at least C++14.
             20
             CACHE STRING "The C++ standard to use."
         )
@@ -35,7 +33,7 @@ if(PROJECT_IS_TOP_LEVEL)
     # Require C++17 features like if constexpr:
     set(CMAKE_CXX_STANDARD_REQUIRED 17)
 
-    set(CMAKE_CXX_EXTENSIONS OFF) # Note: While this is generally a good practice, you should ensure that this setting doesn't cause any issues with third-party libraries or the project's requirements.
+    set(CMAKE_CXX_EXTENSIONS OFF) # NOTE: While this is generally a good practice, you should ensure that this setting doesn't cause any issues with third-party libraries or the project's requirements.
     set(CMAKE_C_EXTENSIONS OFF)
 endif()
 
@@ -85,7 +83,7 @@ endif()
 
 if(ENABLE_IPO)
     include(cmake/InterproceduralOptimization.cmake)
-    #enable_ipo()
+    enable_ipo()
 endif()
 
 include(cmake/Warnings.cmake)
@@ -130,27 +128,30 @@ if(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang") #~ https://git
     set(CMAKE_CXX_COMPILE_OPTIONS_USE_PCH -Xclang -include -Xclang "${PRECOMPILED_HEADER_LIST}")
 endif()
 
-# Note: globbing sources is considered bad practice as CMake's generators may not detect new files
+# NOTE: globbing sources is considered bad practice as CMake's generators may not detect new files
 # automatically. Keep that in mind when changing files, or explicitly mention them here.
 
-set(HEADER_LIST # Note: Add here any file you want to add manually which is not in include/*.
+set(NO_STATIC_CODE_ANALYSIS_LIST # NOTE: Add here any file you want to exclude from clang-tidy static analysis.
+)
+
+set(HEADER_LIST # NOTE: Add here any file you want to add manually which is not in include/*.
 )
 
 file(GLOB_RECURSE HEADER_FILES include/*${SUFFIX_HPPHEADER})
 
 foreach(HEADER_FILE ${HEADER_FILES})
-    if(NOT "${HEADER_FILE}" IN_LIST PRECOMPILED_HEADER_LIST) #~ https://gitlab.kitware.com/cmake/cmake/-/issues/22091
+    if(NOT "${HEADER_FILE}" IN_LIST PRECOMPILED_HEADER_LIST AND NOT "${HEADER_FILE}" IN_LIST NO_STATIC_CODE_ANALYSIS_LIST) #~ https://gitlab.kitware.com/cmake/cmake/-/issues/22091
         list(APPEND HEADER_LIST ${HEADER_FILE})
     endif()
 endforeach()
 
-set(SOURCE_LIST # Note: Add here any file you want to add manually which is not in src/*.cpp.
+set(SOURCE_LIST # NOTE: Add here any file you want to add manually which is not in src/*.cpp.
 )
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
 
 foreach(SOURCE_FILE ${SOURCE_FILES})
-    if(NOT "${SOURCE_FILE}" MATCHES ".*/Main.cpp")
+    if(NOT "${SOURCE_FILE}" MATCHES ".*/Main.cpp" AND NOT "${SOURCE_FILE}" IN_LIST NO_STATIC_CODE_ANALYSIS_LIST)
         list(APPEND SOURCE_LIST ${SOURCE_FILE})
     endif()
 endforeach()
@@ -170,7 +171,7 @@ if(BUILD_HEADERS_ONLY)
         message(STATUS "Created ${PROJECT_NAME} interface library")
     endif()
 elseif(BUILD_EXECUTABLE)
-    add_executable(${PROJECT_NAME} "src/Main.cpp" "${SOURCE_LIST}" "${HEADER_LIST}") # Note: Including header files here helps IDEs but is not required.
+    add_executable(${PROJECT_NAME} "src/Main.cpp" "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
 
     if(VERBOSE_OUTPUT)
         message(STATUS "Created ${PROJECT_NAME} binary with the following sources:")
@@ -238,6 +239,33 @@ endif()
 
 #=========  Link Dependencies  =================================================#
 
+# Create a library with the sources from `NO_STATIC_CODE_ANALYSIS_LIST` and reset its `CMAKE_CXX_CLANG_TIDY` property to avoid having clang-tidy analyze the code:
+if(NO_STATIC_CODE_ANALYSIS_LIST)
+    add_library(NO_STATIC_CODE_ANALYSIS OBJECT "${NO_STATIC_CODE_ANALYSIS_LIST}")
+
+    if(ENABLE_CLANG_TIDY)
+        if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang") #~ https://gitlab.kitware.com/cmake/cmake/-/issues/22081
+            set(CMAKE_CXX_COMPILE_OPTIONS_USE_PCH -Xclang -include -Xclang "${PRECOMPILED_HEADER_LIST}")
+
+            target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
+        endif()
+
+        set_target_properties(NO_STATIC_CODE_ANALYSIS PROPERTIES CXX_CLANG_TIDY "")
+
+        if(BUILD_HEADERS_ONLY)
+            target_link_libraries(${PROJECT_NAME} INTERFACE $<TARGET_OBJECTS:NO_STATIC_CODE_ANALYSIS>)
+        else()
+            target_link_libraries(${PROJECT_NAME} PRIVATE $<TARGET_OBJECTS:NO_STATIC_CODE_ANALYSIS>)
+        endif()
+    endif()
+
+    target_include_directories(NO_STATIC_CODE_ANALYSIS PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>")
+elseif(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang") #~ https://gitlab.kitware.com/cmake/cmake/-/issues/22081
+    set(CMAKE_CXX_COMPILE_OPTIONS_USE_PCH -Xclang -include -Xclang "${PRECOMPILED_HEADER_LIST}")
+
+    target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
+endif()
+
 find_package(cxxopts CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
@@ -283,7 +311,9 @@ if(PROJECT_IS_TOP_LEVEL)
 
         add_library(TESTING_LIBRARY INTERFACE)
 
-        target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
+        if(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+            target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
+        endif()
 
         set_target_properties(
             ${TESTING_LIBRARY}
@@ -292,7 +322,7 @@ if(PROJECT_IS_TOP_LEVEL)
                        CXX_EXTENSIONS NO
         )
 
-        target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # Note: Including header files here helps IDEs but is not required.
+        target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
         target_include_directories(TESTING_LIBRARY INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
         enable_testing()

@@ -59,35 +59,35 @@ macro(enable_clang_tidy)
     find_program(CLANG_TIDY NAMES "clang-tidy")
 
     if(CLANG_TIDY)
-        if(NOT CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-            message(WARNING "clang-tidy found but it will not play nice with GCC pre-compiled headers so it will not be enabled")
-        else()
-            message(STATUS "'${CLANG_TIDY}' found and enabled")
+        message(STATUS "'${CLANG_TIDY}' found and enabled")
 
-            # Export compile commands on for use with `-p`
-            set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # Note: This command only works with Ninja or Makefile generators.
+        # Export compile commands on for use with `-p`
+        set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # Note: This command only works with Ninja or Makefile generators.
 
-            #: https://clang.llvm.org/extra/clang-tidy/
-            set(CLANG_TIDY_OPTIONS "${CLANG_TIDY}" -p=${CMAKE_BINARY_DIR} --extra-arg=-Wno-unknown-warning-option --extra-arg=-Wno-ignored-optimization-argument --extra-arg=-Wno-unused-command-line-argument)
+        #: https://clang.llvm.org/extra/clang-tidy/
+        set(CLANG_TIDY_OPTIONS "${CLANG_TIDY}" -p=${CMAKE_BINARY_DIR} --extra-arg=-Wno-unknown-warning-option --extra-arg=-Wno-ignored-optimization-argument --extra-arg=-Wno-unused-command-line-argument)
 
-            #Set standard
-            if(NOT "${CMAKE_CXX_STANDARD}" STREQUAL "")
-                if("${CLANG_TIDY_OPTIONS_DRIVER_MODE}" STREQUAL "cl")
-                    set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} --extra-arg=/std:c++${CMAKE_CXX_STANDARD})
-                else()
-                    set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} --extra-arg=-std=c++${CMAKE_CXX_STANDARD})
-                endif()
-            endif()
-
-            if(${ENABLE_WARNINGS_AS_ERRORS})
-                set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} --warnings-as-errors=*)
-            endif()
-
-            #set(CLANG_TIDY_COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/tools/clang-tidy-wrapper.bat;${CLANG_TIDY_OPTIONS}" CACHE STRING "A combined command to run clang-tidy with caching wrapper") #~ https://github.com/matus-chochlik/ctcache
-            #set(CTCACHE_DIR "C:/Users/Onimuru/.local/bin/cache")
-
-            set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_OPTIONS}")
+        if(${CMAKE_CXX_COMPILER} MATCHES "cl.exe")
+            set(CLANG_TIDY_OPTIONS "${CLANG_TIDY_OPTIONS}" --extra-arg=/EHsc)
         endif()
+
+        #Set standard
+        if(NOT "${CMAKE_CXX_STANDARD}" STREQUAL "")
+            if(${CMAKE_CXX_COMPILER} MATCHES "cl.exe")
+                set(CLANG_TIDY_OPTIONS "${CLANG_TIDY_OPTIONS}" --extra-arg=/std:c++${CMAKE_CXX_STANDARD})
+            else()
+                set(CLANG_TIDY_OPTIONS "${CLANG_TIDY_OPTIONS}" --extra-arg=-std=c++${CMAKE_CXX_STANDARD})
+            endif()
+        endif()
+
+        if(${ENABLE_WARNINGS_AS_ERRORS})
+            set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} --warnings-as-errors=*)
+        endif()
+
+        #set(CLANG_TIDY_COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/tools/clang-tidy-wrapper.bat;${CLANG_TIDY_OPTIONS}" CACHE STRING "A combined command to run clang-tidy with caching wrapper") #~ https://github.com/matus-chochlik/ctcache
+        #set(CTCACHE_DIR "C:/Users/Onimuru/.local/bin/cache")
+
+        set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_OPTIONS}")
     else()
         message(WARNING "clang-tidy is enabled but the executable was not found")
     endif()

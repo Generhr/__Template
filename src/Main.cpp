@@ -1,6 +1,8 @@
 // #define FMT_HEADER_ONLY // may need this line
 
 #include <filesystem>
+#include <fstream>
+#include <iostream>
 
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
@@ -19,6 +21,21 @@ int main(int argc, char** argv) {
               << '\n';
     std::cout << "SPDLOG: " << SPDLOG_VER_MAJOR << "." << SPDLOG_VER_MINOR << "." << SPDLOG_VER_PATCH << '\n';
     std::cout << "\n\nUsage Example:\n";
+
+    try {
+        int age = 15;
+
+        if (age >= 18) {
+            fmt::print("Access granted - you are old enough.\n");
+        }
+        else {
+            throw(age);
+        }
+    }
+    catch (int myNum) {
+        fmt::print("Access denied - You must be at least 18 years old.\n");
+        fmt::print("Age is: {}\n", myNum);
+    }
 
     // Compiler Warning and clang tidy error
     // std::int32_t i = 0;

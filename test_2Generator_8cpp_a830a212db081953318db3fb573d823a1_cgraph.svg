@@ -20,7 +20,7 @@
 <!-- Node2 -->
 <g id="node2" class="node">
 <title>Node2</title>
-<g id="a_node2"><a xlink:href="namespaceGenerator.html#a4804550498cc275c72c455e3e34209a2" target="_top" xlink:title=" ">
+<g id="a_node2"><a xlink:href="namespaceGenerator.html#a430a33e54eebc8ad26632166de7e2efe" target="_top" xlink:title=" ">
 <polygon fill="none" stroke="black" points="77,-0.5 77,-19.5 192,-19.5 192,-0.5 77,-0.5"/>
 <text text-anchor="middle" x="134.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">Generator::generate</text>
 </a>

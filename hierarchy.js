@@ -1,5 +1,8 @@
 var hierarchy =
 [
+    [ "ClangTidyExample", "classClangTidyExample.html", [
+      [ "DerivedExample", "classDerivedExample.html", null ]
+    ] ],
     [ "object", null, [
       [ "clang-tidy-cache.ClangTidyCache", "classclang-tidy-cache_1_1ClangTidyCache.html", null ],
       [ "clang-tidy-cache.ClangTidyCacheHash", "classclang-tidy-cache_1_1ClangTidyCacheHash.html", null ],

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['original_5fargs_39',['original_args',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a88605a2f6605cc5879968609c963abe0',1,'clang-tidy-cache::ClangTidyCacheOpts']]]
+  ['original_5fargs_45',['original_args',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a88605a2f6605cc5879968609c963abe0',1,'clang-tidy-cache::ClangTidyCacheOpts']]]
 ];

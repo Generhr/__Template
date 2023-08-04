@@ -8,5 +8,7 @@ var annotated_dup =
       [ "ClangTidyRedisCache", "classclang-tidy-cache_1_1ClangTidyRedisCache.html", "classclang-tidy-cache_1_1ClangTidyRedisCache" ],
       [ "ClangTidyS3Cache", "classclang-tidy-cache_1_1ClangTidyS3Cache.html", "classclang-tidy-cache_1_1ClangTidyS3Cache" ],
       [ "ClangTidyCache", "classclang-tidy-cache_1_1ClangTidyCache.html", "classclang-tidy-cache_1_1ClangTidyCache" ]
-    ] ]
+    ] ],
+    [ "ClangTidyExample", "classClangTidyExample.html", "classClangTidyExample" ],
+    [ "DerivedExample", "classDerivedExample.html", "classDerivedExample" ]
 ];

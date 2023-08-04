@@ -124,15 +124,14 @@ add_subdirectory(external EXCLUDE_FROM_ALL)
 
 set(PRECOMPILED_HEADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
 
-if(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang") #~ https://gitlab.kitware.com/cmake/cmake/-/issues/22081
-    set(CMAKE_CXX_COMPILE_OPTIONS_USE_PCH -Xclang -include -Xclang "${PRECOMPILED_HEADER_LIST}")
-endif()
-
 # NOTE: globbing sources is considered bad practice as CMake's generators may not detect new files
 # automatically. Keep that in mind when changing files, or explicitly mention them here.
 
-set(NO_STATIC_CODE_ANALYSIS_LIST # NOTE: Add here any file you want to exclude from clang-tidy static analysis.
-)
+if(ENABLE_CLANG_TIDY)
+    set(NO_STATIC_CODE_ANALYSIS_LIST # Add here any file you want to exclude from clang-tidy static analysis.
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/ClangTidyWarnings.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/include/ClangTidyWarnings.h"
+    )
+endif()
 
 set(HEADER_LIST # NOTE: Add here any file you want to add manually which is not in include/*.
 )
@@ -171,7 +170,16 @@ if(BUILD_HEADERS_ONLY)
         message(STATUS "Created ${PROJECT_NAME} interface library")
     endif()
 elseif(BUILD_EXECUTABLE)
-    add_executable(${PROJECT_NAME} "src/Main.cpp" "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
+    if(ENABLE_CLANG_TIDY AND NO_STATIC_CODE_ANALYSIS_LIST)
+        # Create a library with the sources from `NO_STATIC_CODE_ANALYSIS_LIST` and reset its `CMAKE_CXX_CLANG_TIDY` property to avoid having clang-tidy analyze the code:
+        add_library(NO_STATIC_CODE_ANALYSIS OBJECT "${NO_STATIC_CODE_ANALYSIS_LIST}")
+        set_target_properties(NO_STATIC_CODE_ANALYSIS PROPERTIES CXX_CLANG_TIDY "")
+        target_include_directories(NO_STATIC_CODE_ANALYSIS PRIVATE "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>")
+
+        add_executable(${PROJECT_NAME} "src/Main.cpp" "$<TARGET_OBJECTS:NO_STATIC_CODE_ANALYSIS>" "${SOURCE_LIST}" "${HEADER_LIST}")
+    else()
+        add_executable(${PROJECT_NAME} "src/Main.cpp" "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
+    endif()
 
     if(VERBOSE_OUTPUT)
         message(STATUS "Created ${PROJECT_NAME} binary with the following sources:")
@@ -184,7 +192,7 @@ elseif(BUILD_EXECUTABLE)
         message(STATUS "Created ${PROJECT_NAME} binary")
     endif()
 else()
-    add_library(${PROJECT_NAME} STATIC "${SOURCE_LIST}" "${HEADER_LIST}")
+    add_library(${PROJECT_NAME} "${SOURCE_LIST}" "${HEADER_LIST}")
 
     if(VERBOSE_OUTPUT)
         message(STATUS "Created ${PROJECT_NAME} static library with the following sources:")
@@ -201,6 +209,18 @@ else()
     else()
         message(STATUS "Created ${PROJECT_NAME} static library")
     endif()
+endif()
+
+#========  Include Directories  ================================================#
+
+if(BUILD_HEADERS_ONLY)
+    target_include_directories(${PROJECT_NAME} INTERFACE $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+else()
+    target_include_directories(
+        ${PROJECT_NAME}
+        PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
+        PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include"
+    )
 endif()
 
 #=====  Set Standard and Warnings  =============================================#
@@ -221,48 +241,11 @@ if(ENABLE_WARNINGS)
     target_set_warnings(${PROJECT_NAME})
 endif()
 
-#========  Include Directories  ================================================#
-
-if(BUILD_HEADERS_ONLY)
-    target_precompile_headers(${PROJECT_NAME} INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
-
-    target_include_directories(${PROJECT_NAME} INTERFACE $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
-else()
-    target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
-
-    target_include_directories(
-        ${PROJECT_NAME}
-        PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
-        PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include" "${CMAKE_CURRENT_SOURCE_DIR}/src"
-    )
-endif()
-
 #=========  Link Dependencies  =================================================#
 
-# Create a library with the sources from `NO_STATIC_CODE_ANALYSIS_LIST` and reset its `CMAKE_CXX_CLANG_TIDY` property to avoid having clang-tidy analyze the code:
-if(NO_STATIC_CODE_ANALYSIS_LIST)
-    add_library(NO_STATIC_CODE_ANALYSIS OBJECT "${NO_STATIC_CODE_ANALYSIS_LIST}")
-
-    if(ENABLE_CLANG_TIDY)
-        if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang") #~ https://gitlab.kitware.com/cmake/cmake/-/issues/22081
-            set(CMAKE_CXX_COMPILE_OPTIONS_USE_PCH -Xclang -include -Xclang "${PRECOMPILED_HEADER_LIST}")
-
-            target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
-        endif()
-
-        set_target_properties(NO_STATIC_CODE_ANALYSIS PROPERTIES CXX_CLANG_TIDY "")
-
-        if(BUILD_HEADERS_ONLY)
-            target_link_libraries(${PROJECT_NAME} INTERFACE $<TARGET_OBJECTS:NO_STATIC_CODE_ANALYSIS>)
-        else()
-            target_link_libraries(${PROJECT_NAME} PRIVATE $<TARGET_OBJECTS:NO_STATIC_CODE_ANALYSIS>)
-        endif()
-    endif()
-
-    target_include_directories(NO_STATIC_CODE_ANALYSIS PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>")
-elseif(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang") #~ https://gitlab.kitware.com/cmake/cmake/-/issues/22081
-    set(CMAKE_CXX_COMPILE_OPTIONS_USE_PCH -Xclang -include -Xclang "${PRECOMPILED_HEADER_LIST}")
-
+if(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+    target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
+elseif(NOT ENABLE_CLANG_TIDY)
     target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
 endif()
 
@@ -271,11 +254,7 @@ find_package(fmt CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
-if(BUILD_HEADERS_ONLY)
-    target_link_libraries(${PROJECT_NAME} INTERFACE nlohmann_json::nlohmann_json fmt::fmt spdlog::spdlog cxxopts::cxxopts)
-else()
-    target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json fmt::fmt spdlog::spdlog cxxopts::cxxopts)
-endif()
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json fmt::fmt spdlog::spdlog cxxopts::cxxopts)
 
 #===========  Alias Targets  ===================================================#
 
@@ -310,11 +289,8 @@ if(PROJECT_IS_TOP_LEVEL)
         endif()
 
         add_library(TESTING_LIBRARY INTERFACE)
-
-        if(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-            target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
-        endif()
-
+        target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
+        target_include_directories(TESTING_LIBRARY INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include")
         set_target_properties(
             ${TESTING_LIBRARY}
             PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD}
@@ -322,8 +298,11 @@ if(PROJECT_IS_TOP_LEVEL)
                        CXX_EXTENSIONS NO
         )
 
-        target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
-        target_include_directories(TESTING_LIBRARY INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+        if(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+            target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
+        elseif(NOT ENABLE_CLANG_TIDY)
+            target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
+        endif()
 
         enable_testing()
 

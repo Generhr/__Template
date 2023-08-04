@@ -57,7 +57,7 @@ Checks: "-*,\
     -readability-uppercase-literal-suffix,\
     "
 
-HeaderFilterRegex: '.*(?<!pch\.h)$'
+HeaderFilterRegex: '.*'
 
 CheckOptions:
   - key: modernize-use-default-member-init.UseAssignment

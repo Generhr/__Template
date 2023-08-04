@@ -216,4 +216,11 @@
         "*.cc",
         "*.c(pp)?"
     ],
+    "cSpell.words": [
+        "DXTRACE",
+        "FILEW",
+        "HRESULT",
+        "kwargs",
+        "pargs"
+    ],
 }

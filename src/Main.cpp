@@ -9,6 +9,7 @@
 #include <cxxopts.hpp>
 #include <nlohmann/json.hpp>
 
+#include "ClangTidyWarnings.h"
 #include "config.h"
 
 using json = nlohmann::json;
@@ -37,8 +38,10 @@ int main(int argc, char** argv) {
         fmt::print("Age is: {}\n", myNum);
     }
 
-    // Compiler Warning and clang tidy error
-    // std::int32_t i = 0;
+    ClangTidyExample example;
+    int value = 42;
+
+    example.Function(value);
 
     // Address Sanitizer should see this
     // int *x = new int[42];

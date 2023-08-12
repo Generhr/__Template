@@ -5,7 +5,7 @@ function(enable_doxygen)
         COMPONENTS dot
         OPTIONAL_COMPONENTS mscgen dia
         QUIET
-    ) # Note: the dot module is provided by graphviz.
+    ) # NOTE: the dot module is provided by graphviz.
 
     if(DOXYGEN_FOUND)
         set(DOXYGEN_PROJECT_NAME "${PROJECT_NAME}")

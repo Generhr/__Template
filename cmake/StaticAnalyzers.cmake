@@ -62,7 +62,7 @@ macro(enable_clang_tidy)
         message(STATUS "'${CLANG_TIDY}' found and enabled")
 
         # Export compile commands on for use with `-p`
-        set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # Note: This command only works with Ninja or Makefile generators.
+        set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # NOTE: This command only works with Ninja or Makefile generators.
 
         #: https://clang.llvm.org/extra/clang-tidy/
         set(CLANG_TIDY_OPTIONS "${CLANG_TIDY}" -p=${CMAKE_BINARY_DIR} --extra-arg=-Wno-unknown-warning-option --extra-arg=-Wno-ignored-optimization-argument --extra-arg=-Wno-unused-command-line-argument)

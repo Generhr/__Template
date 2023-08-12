@@ -16,7 +16,7 @@
         "xstring": "cpp",
         "type_traits": "cpp"
     },
-    "files.autoSave": "off", // This will build the project when you switch to another window (annoying).
+    "files.autoSave": "off", //~ Builds the project when you switch to another window (annoying).
     "files.exclude": {
         "node_modules/**/*": true,
         "**/.classpath": true,
@@ -71,6 +71,7 @@
     "cmake.clearOutputBeforeBuild": true,
     "cmake.configureOnEdit": true,
     "cmake.configureOnOpen": false,
+    "cmake.ctest.allowParallelJobs": true,
     "cmake.ignoreCMakeListsMissing": false,
     "cmake.launchBehavior": "newTerminal",
     "cmake.showSystemKits": false,

@@ -118,6 +118,10 @@ endif()
 
 add_subdirectory(configure)
 
+# Move any textures so that they are relative to the executable
+file(GLOB_RECURSE COPY_FILES "res/*")
+file(COPY ${COPY_FILES} DESTINATION "${CMAKE_BINARY_DIR}/bin/res")
+
 #========== Add Source Files ==================================================#
 
 add_subdirectory(external EXCLUDE_FROM_ALL)
@@ -133,7 +137,7 @@ if(ENABLE_CLANG_TIDY)
     )
 endif()
 
-set(HEADER_LIST # NOTE: Add here any file you want to add manually which is not in include/*.
+set(HEADER_LIST # Add here any file you want to add manually which is not in include/*.
 )
 
 file(GLOB_RECURSE HEADER_FILES include/*${SUFFIX_HPPHEADER})
@@ -144,7 +148,7 @@ foreach(HEADER_FILE ${HEADER_FILES})
     endif()
 endforeach()
 
-set(SOURCE_LIST # NOTE: Add here any file you want to add manually which is not in src/*.cpp.
+set(SOURCE_LIST # Add here any file you want to add manually which is not in src/*.cpp.
 )
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
@@ -157,6 +161,10 @@ endforeach()
 
 #===========  Create Target  ===================================================#
 
+# Delete all cmake files from previous builds
+add_custom_target(clean_build_folder COMMAND git clean -d -f -x)
+
+# Main executable
 if(BUILD_HEADERS_ONLY)
     add_library(${PROJECT_NAME} INTERFACE)
 
@@ -282,6 +290,7 @@ if(PROJECT_IS_TOP_LEVEL)
                 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*"
                 "${CMAKE_CURRENT_SOURCE_DIR}/external/*"
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp"
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/ClangTidyWarnings.cpp"
                 "${CMAKE_CURRENT_SOURCE_DIR}/test/*"
                 "${CMAKE_CURRENT_SOURCE_DIR}/build/*"
                 "${CMAKE_CURRENT_SOURCE_DIR}/docs/*"

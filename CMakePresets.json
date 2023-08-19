@@ -9,7 +9,7 @@
         {
             "name": "ninja-multi-configure",
             "displayName": "Ninja-Multi",
-            "description": "Configure with vcpkg toolchain and generate Ninja project files",
+            "description": "Configures the project using the vcpkg toolchain and generates Ninja project files with multi-configuration support.",
             "generator": "Ninja Multi-Config",
             "toolchainFile": "${sourceDir}/external/vcpkg/scripts/buildsystems/vcpkg.cmake",
             "binaryDir": "${sourceDir}/build",
@@ -41,7 +41,7 @@
             "name": "ninja-multi-build-debug",
             "configurePreset": "ninja-multi-configure",
             "displayName": "Build (Debug)",
-            "description": "Build ninja-multi-vcpkg Debug configuration",
+            "description": "Builds the project with Ninja Multi-Config in Debug configuration.",
             "configuration": "Debug",
             "cleanFirst": false,
             "jobs": 2
@@ -50,7 +50,7 @@
             "name": "ninja-multi-build-release",
             "configurePreset": "ninja-multi-configure",
             "displayName": "Build (Release)",
-            "description": "Build ninja-multi-vcpkg Release configuration",
+            "description": "Builds the project with Ninja Multi-Config in Release configuration.",
             "configuration": "Release",
             "jobs": 2
         }

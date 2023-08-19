@@ -13,14 +13,6 @@ macro(enable_cppcheck)
             set(CPPCHECK_TEMPLATE "gcc")
         endif()
 
-        # Get the number of processors to speed up linting
-        include(ProcessorCount)
-        ProcessorCount(PROCESSOR_COUNT)
-
-        if(PROCESSOR_COUNT EQUAL 0)
-            set(PROCESSOR_COUNT 1)
-        endif()
-
         if("${CPPCHECK_OPTIONS}" STREQUAL "")
             set(CMAKE_CXX_CPPCHECK
                 ${CPPCHECK}

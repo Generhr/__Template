@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.16...3.27 FATAL_ERROR) #? 3.16 - target_precompile_headers
 
-#============  Safe Guards  ====================================================#
-
-include(cmake/SafeGuards.cmake)
-
 #==========  Project Details  ==================================================#
 
 # NOTE: update this with your new project's details.
@@ -14,6 +10,10 @@ project("__Name"
         HOMEPAGE_URL "__Url"
         LANGUAGES CXX C # NOTE: To support external libraries, it's good practice to list both CXX and C.
 )
+
+#============  Safe Guards  ====================================================#
+
+include(cmake/SafeGuards.cmake)
 
 #==========  CMake Variables  ==================================================#
 
@@ -41,6 +41,16 @@ endif()
 set(CMAKE_SUPPRESS_REGENERATION true)
 
 set(CMAKE_COLOR_DIAGNOSTICS ON)
+
+# Find number of processors
+if(NOT DEFINED PROCESSOR_COUNT)
+    include(ProcessorCount)
+    ProcessorCount(PROCESSOR_COUNT)
+
+    if(PROCESSOR_COUNT EQUAL 0)
+        set(PROCESSOR_COUNT 1)
+    endif()
+endif()
 
 set(GIT_SHA
     "Unknown"
@@ -127,6 +137,10 @@ file(COPY ${COPY_FILES} DESTINATION "${CMAKE_BINARY_DIR}/bin/res")
 add_subdirectory(external EXCLUDE_FROM_ALL)
 
 set(PRECOMPILED_HEADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
+
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "[Cc]lang")
+    set(WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST "$ENV{EXTERNAL_INCLUDE}")
+endif()
 
 # NOTE: globbing sources is considered bad practice as CMake's generators may not detect new files
 # automatically. Keep that in mind when changing files, or explicitly mention them here.
@@ -219,14 +233,12 @@ else()
     endif()
 endif()
 
-#========  Include Directories  ================================================#
-
 if(BUILD_HEADERS_ONLY)
-    target_include_directories(${PROJECT_NAME} INTERFACE $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+    target_include_directories(${PROJECT_NAME} INTERFACE "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
 else()
     target_include_directories(
         ${PROJECT_NAME}
-        PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
+        PUBLIC "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
         PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include"
     )
 endif()
@@ -249,11 +261,14 @@ if(ENABLE_WARNINGS)
     target_set_warnings(${PROJECT_NAME})
 endif()
 
+#========  Compile Definitions  ================================================#
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_DEBUG)
+
 #=========  Link Dependencies  =================================================#
 
-if(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-    target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
-elseif(NOT ENABLE_CLANG_TIDY)
+# Precompile headers
+if((ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang") OR NOT ENABLE_CLANG_TIDY)
     target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
 endif()
 
@@ -276,30 +291,17 @@ endif()
 
 if(PROJECT_IS_TOP_LEVEL)
     if(ENABLE_TESTING)
+        enable_testing()
+
         if(ENABLE_CODE_COVERAGE)
             include(cmake/CodeCoverage.cmake)
-
-            append_coverage_compiler_flags()
-
-            setup_target_for_coverage_lcov(
-                NAME
-                coverage
-                EXECUTABLE
-                ctest
-                EXCLUDE
-                "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*"
-                "${CMAKE_CURRENT_SOURCE_DIR}/external/*"
-                "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp"
-                "${CMAKE_CURRENT_SOURCE_DIR}/src/ClangTidyWarnings.cpp"
-                "${CMAKE_CURRENT_SOURCE_DIR}/test/*"
-                "${CMAKE_CURRENT_SOURCE_DIR}/build/*"
-                "${CMAKE_CURRENT_SOURCE_DIR}/docs/*"
-            )
         endif()
 
         add_library(TESTING_LIBRARY INTERFACE)
+
         target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
-        target_include_directories(TESTING_LIBRARY INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+        target_include_directories(TESTING_LIBRARY INTERFACE "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
         set_target_properties(
             ${TESTING_LIBRARY}
             PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD}
@@ -307,13 +309,13 @@ if(PROJECT_IS_TOP_LEVEL)
                        CXX_EXTENSIONS NO
         )
 
+        target_compile_definitions(TESTING_LIBRARY INTERFACE ${PROJECT_NAME}_TEST)
+
         if(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
             target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
         elseif(NOT ENABLE_CLANG_TIDY)
             target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
         endif()
-
-        enable_testing()
 
         find_package(GTest CONFIG REQUIRED)
         include(GoogleTest)

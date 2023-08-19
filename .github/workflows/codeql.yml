@@ -21,6 +21,10 @@ on:
   schedule:
     - cron: "0 8 * * 0"
 
+concurrency:
+  group: CodeQL
+  cancel-in-progress: true
+
 jobs:
   CodeQL-Build:
     name: Analyze

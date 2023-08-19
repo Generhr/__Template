@@ -41,6 +41,7 @@ foreach(TEST_FILE ${TEST_FILES})
 
     target_link_libraries(${TEST_NAME} PRIVATE ${TEST_LIBRARIES})
 
+    #~ gtest_discover_tests: https://cmake.org/cmake/help/latest/module/GoogleTest.html#command:gtest_discover_tests
     gtest_discover_tests(
         ${TEST_NAME}
         PROPERTIES
@@ -51,5 +52,26 @@ foreach(TEST_FILE ${TEST_FILES})
 endforeach()
 
 add_custom_target(unit_tests DEPENDS ${TEST_NAMES})
+
+if(ENABLE_CODE_COVERAGE)
+    foreach(TEST_NAME ${TEST_NAMES}) #~ codecov-bash: https://github.com/codecov/codecov-bash/blob/master/codecov
+        append_coverage_compiler_flags_to_target(${TEST_NAME})
+
+        add_custom_command(
+            TARGET unit_tests
+            POST_BUILD
+            #~ CTest Command-Line Reference: https://manpages.ubuntu.com/manpages/xenial/en/man1/ctest.1.html
+            COMMAND ctest -C $<CONFIGURATION> --quiet -j ${PROCESSOR_COUNT} # `ctest` must be run prior to
+            #~ llvm-profdata: https://llvm.org/docs/CommandGuide/llvm-profdata.html
+            COMMAND llvm-profdata merge
+                    -sparse # The `-sparse` option is a trade-off between memory efficiency and profile data accuracy. Use it when you want to manage the size of the profile data file while still maintaining reasonable accuracy for your profiling or coverage analysis needs.
+                    default.profraw -o coverage.profdata
+            #~ llvm-cov: https://llvm.org/docs/CommandGuide/llvm-cov.html
+            COMMAND llvm-cov show "${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${TEST_NAME}.exe" -instr-profile=coverage.profdata > ${CMAKE_BINARY_DIR}/coverage_${TEST_NAME}.txt -j ${PROCESSOR_COUNT}
+            WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+            COMMENT "Generating code coverage report"
+        )
+    endforeach()
+endif()
 
 message(STATUS "Created `unit_tests` build target that will build all tests found in ${CMAKE_CURRENT_SOURCE_DIR} (${TEST_NAMES})")

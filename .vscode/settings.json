@@ -220,8 +220,11 @@
     "cSpell.words": [
         "DXTRACE",
         "FILEW",
+        "gcovr",
         "HRESULT",
         "kwargs",
-        "pargs"
+        "lcov",
+        "pargs",
+        "vcpkg"
     ],
 }

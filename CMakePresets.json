@@ -7,47 +7,65 @@
     },
     "configurePresets": [
         {
-            "name": "ninja-multi-vcpkg",
-            "displayName": "Ninja Multi-Config",
-            "description": "Configure with vcpkg toolchain and generate Ninja project files for all configurations",
+            "name": "ninja-multi-configure",
+            "displayName": "Ninja-Multi",
+            "description": "Configure with vcpkg toolchain and generate Ninja project files",
             "generator": "Ninja Multi-Config",
             "toolchainFile": "${sourceDir}/external/vcpkg/scripts/buildsystems/vcpkg.cmake",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
                 "CMAKE_CONFIGURATION_TYPES": "Debug;Release;DebugCoverage",
-                "CMAKE_DEFAULT_BUILD_TYPE": "Debug"
+                "CMAKE_DEFAULT_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "ENABLE_DOXYGEN": "OFF",
+                "ENABLE_CPPCHECK": "OFF",
+                "ENABLE_CLANG_TIDY": "OFF",
+                "ENABLE_INCLUDE_WHAT_YOU_USE": "OFF",
+                "ENABLE_SANITIZE_ADDR": "OFF",
+                "ENABLE_SANITIZE_UNDEF": "OFF",
+                "ENABLE_SANITIZE_LEAK": "OFF",
+                "ENABLE_SANITIZE_THREAD": "OFF",
+                "ENABLE_IPO": "ON",
+                "ENABLE_WARNINGS": "ON",
+                "ENABLE_WARNINGS_AS_ERRORS": "OFF",
+                "VERBOSE_OUTPUT": "OFF",
+                "ENABLE_TESTING": "OFF",
+                "USE_GOOGLE_MOCK": "OFF",
+                "ENABLE_CODE_COVERAGE": "OFF"
             }
         }
     ],
     "buildPresets": [
         {
-            "name": "ninja-multi-vcpkg-debug",
-            "configurePreset": "ninja-multi-vcpkg",
-            "displayName": "Build ninja-multi-vcpkg-debug",
+            "name": "ninja-multi-build-debug",
+            "configurePreset": "ninja-multi-configure",
+            "displayName": "Build (Debug)",
             "description": "Build ninja-multi-vcpkg Debug configuration",
             "configuration": "Debug",
-            "jobs": 4
+            "cleanFirst": false,
+            "jobs": 2
         },
         {
-            "name": "ninja-multi-vcpkg-release",
-            "configurePreset": "ninja-multi-vcpkg",
-            "displayName": "Build ninja-multi-vcpkg-release",
+            "name": "ninja-multi-build-release",
+            "configurePreset": "ninja-multi-configure",
+            "displayName": "Build (Release)",
             "description": "Build ninja-multi-vcpkg Release configuration",
             "configuration": "Release",
-            "jobs": 4
+            "jobs": 2
         }
     ],
     "testPresets": [
         {
-            "name": "ninja-multi-vcpkg-debug",
-            "configurePreset": "ninja-multi-vcpkg",
+            "name": "ninja-multi-test-debug",
+            "configurePreset": "ninja-multi-configure",
             "configuration": "Debug",
-            "displayName": "Run CTest tests on Ninja Configuration for Debug Build",
+            "displayName": "Test (Debug)",
             "execution": {
                 "noTestsAction": "error",
                 "scheduleRandom": true,
                 "stopOnFailure": true,
-                "jobs": 4
+                "jobs": 2
             },
             "output": {
                 "outputOnFailure": true,
@@ -55,15 +73,15 @@
             }
         },
         {
-            "name": "ninja-multi-vcpkg-release",
-            "configurePreset": "ninja-multi-vcpkg",
+            "name": "ninja-multi-test-release",
+            "configurePreset": "ninja-multi-configure",
             "configuration": "Release",
-            "displayName": "Run CTest tests on Ninja Configuration for Release Build",
+            "displayName": "Test (Release)",
             "execution": {
                 "noTestsAction": "error",
                 "scheduleRandom": true,
                 "stopOnFailure": true,
-                "jobs": 4
+                "jobs": 2
             },
             "output": {
                 "outputOnFailure": true,

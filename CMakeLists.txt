@@ -263,7 +263,8 @@ endif()
 
 #========  Compile Definitions  ================================================#
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_DEBUG)
+string(TOUPPER "${PROJECT_NAME}_DEBUG" PROJECT_DEBUG_DEFINE)
+target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_DEBUG_DEFINE})
 
 #=========  Link Dependencies  =================================================#
 
@@ -309,7 +310,8 @@ if(PROJECT_IS_TOP_LEVEL)
                        CXX_EXTENSIONS NO
         )
 
-        target_compile_definitions(TESTING_LIBRARY INTERFACE ${PROJECT_NAME}_TEST)
+        string(TOUPPER "${PROJECT_NAME}_TEST" PROJECT_TEST_DEFINE)
+        target_compile_definitions(TESTING_LIBRARY INTERFACE PROJECT_TEST_DEFINE)
 
         if(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
             target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")

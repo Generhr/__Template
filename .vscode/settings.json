@@ -218,6 +218,7 @@
         "*.c(pp)?"
     ],
     "cSpell.words": [
+        "codecov",
         "DXTRACE",
         "FILEW",
         "gcovr",

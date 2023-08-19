@@ -294,11 +294,12 @@ if(PROJECT_IS_TOP_LEVEL)
     if(ENABLE_TESTING)
         enable_testing()
 
+        add_library(TESTING_LIBRARY INTERFACE)
+
         if(ENABLE_CODE_COVERAGE)
             include(cmake/CodeCoverage.cmake)
+            append_coverage_compiler_flags_to_target(TESTING_LIBRARY)
         endif()
-
-        add_library(TESTING_LIBRARY INTERFACE)
 
         target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
         target_include_directories(TESTING_LIBRARY INTERFACE "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" "${CMAKE_CURRENT_SOURCE_DIR}/include")

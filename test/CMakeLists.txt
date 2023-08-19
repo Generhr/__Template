@@ -54,22 +54,29 @@ endforeach()
 add_custom_target(unit_tests DEPENDS ${TEST_NAMES})
 
 if(ENABLE_CODE_COVERAGE)
-    foreach(TEST_NAME ${TEST_NAMES}) #~ codecov-bash: https://github.com/codecov/codecov-bash/blob/master/codecov
-        append_coverage_compiler_flags_to_target(${TEST_NAME})
+    if(WIN32)
+        set(OUTPUT_REDIRECT > NUL 2>&1)
+    elseif(APPLE OR UNIX)
+        set(OUTPUT_REDIRECT > /dev/null 2>&1)
+    endif()
 
+    if(CMAKE_GENERATOR MATCHES "Ninja Multi")
+        set(CURRENT_BINARY_DIR "${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
+    elseif(CMAKE_GENERATOR MATCHES "Ninja")
+        set(CURRENT_BINARY_DIR "${PROJECT_BINARY_DIR}")
+    endif()
+
+    foreach(TEST_NAME ${TEST_NAMES}) #~ codecov-bash: https://github.com/codecov/codecov-bash/blob/master/codecov
         add_custom_command(
             TARGET unit_tests
             POST_BUILD
-            #~ CTest Command-Line Reference: https://manpages.ubuntu.com/manpages/xenial/en/man1/ctest.1.html
-            COMMAND ctest -C $<CONFIGURATION> --quiet -j ${PROCESSOR_COUNT} # `ctest` must be run prior to
+            COMMAND ${CMAKE_COMMAND} -E env LLVM_PROFILE_FILE=${TEST_NAME}.profraw $<TARGET_FILE:${TEST_NAME}> ${OUTPUT_REDIRECT}
             #~ llvm-profdata: https://llvm.org/docs/CommandGuide/llvm-profdata.html
-            COMMAND llvm-profdata merge
-                    -sparse # The `-sparse` option is a trade-off between memory efficiency and profile data accuracy. Use it when you want to manage the size of the profile data file while still maintaining reasonable accuracy for your profiling or coverage analysis needs.
-                    default.profraw -o coverage.profdata
+            COMMAND llvm-profdata merge -sparse "${TEST_NAME}.profraw" -o "${TEST_NAME}.profdata"
             #~ llvm-cov: https://llvm.org/docs/CommandGuide/llvm-cov.html
-            COMMAND llvm-cov show "${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${TEST_NAME}.exe" -instr-profile=coverage.profdata > ${CMAKE_BINARY_DIR}/coverage_${TEST_NAME}.txt -j ${PROCESSOR_COUNT}
-            WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-            COMMENT "Generating code coverage report"
+            COMMAND llvm-cov show $<TARGET_FILE:${TEST_NAME}> -instr-profile="${TEST_NAME}.profdata" > "${CMAKE_BINARY_DIR}/coverage_${TEST_NAME}.txt" -j ${PROCESSOR_COUNT}
+            WORKING_DIRECTORY "${CURRENT_BINARY_DIR}"
+            COMMENT "Generating code coverage report for ${TEST_NAME}.exe"
         )
     endforeach()
 endif()

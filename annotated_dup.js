@@ -9,6 +9,10 @@ var annotated_dup =
       [ "ClangTidyS3Cache", "classclang-tidy-cache_1_1ClangTidyS3Cache.html", "classclang-tidy-cache_1_1ClangTidyS3Cache" ],
       [ "ClangTidyCache", "classclang-tidy-cache_1_1ClangTidyCache.html", "classclang-tidy-cache_1_1ClangTidyCache" ]
     ] ],
-    [ "ClangTidyExample", "classClangTidyExample.html", "classClangTidyExample" ],
-    [ "DerivedExample", "classDerivedExample.html", "classDerivedExample" ]
+    [ "ClangTidyWarnings", "classClangTidyWarnings.html", "classClangTidyWarnings" ],
+    [ "ClangTidyWarningsTest", "classClangTidyWarningsTest.html", "classClangTidyWarningsTest" ],
+    [ "MockMyClass", "classMockMyClass.html", "classMockMyClass" ],
+    [ "MyClass", "classMyClass.html", "classMyClass" ],
+    [ "MyClassMockTest", "classMyClassMockTest.html", "classMyClassMockTest" ],
+    [ "MyClassTest", "classMyClassTest.html", "classMyClassTest" ]
 ];

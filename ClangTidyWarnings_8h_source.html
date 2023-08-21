@@ -89,29 +89,45 @@ $(document).ready(function(){initNavTree('ClangTidyWarnings_8h_source.html','');
 <div class="title">ClangTidyWarnings.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="ClangTidyWarnings_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef CLANG_TIDY_WARNINGS_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define CLANG_TIDY_WARNINGS_H</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno"><a class="line" href="classClangTidyExample.html">    4</a></span>&#160;<span class="keyword">class </span><a class="code" href="classClangTidyExample.html">ClangTidyExample</a> {</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    <a class="code" href="classClangTidyExample.html#ab40cd0e626579eebcf716ba23df99f01">ClangTidyExample</a>();</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classClangTidyExample.html#ae6a95d95d335a16a78df942ddcb8514c">Function</a>(<span class="keywordtype">int</span> value);</div>
+<a href="ClangTidyWarnings_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
+<div class="line"><a name="l00003"></a><span class="lineno"><a class="line" href="classClangTidyWarnings.html">    3</a></span>&#160;<span class="keyword">class </span><a class="code" href="classClangTidyWarnings.html">ClangTidyWarnings</a> {</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    <a class="code" href="classClangTidyWarnings.html#a54bb0ce491c7f45078138b79ae42ab0e">ClangTidyWarnings</a>();</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="comment">// Function with an unused parameter</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classClangTidyWarnings.html#a0d5eaf8e411ff50e5bbbd5b6d2a67a41">UnusedParameter</a>(<span class="keywordtype">int</span> unusedParam);</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classClangTidyExample.html#aa98537260b855217a8c001ef47d8058c">UnusedFunction</a>(<span class="keywordtype">int</span> value);</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="classClangTidyExample.html#a3a8820b0b4a621347a329874cda7670c">   12</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classClangTidyExample.html#a3a8820b0b4a621347a329874cda7670c">MissingOverride</a>(<span class="keywordtype">int</span> value);</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keywordtype">int</span> m_data;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;};</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// CLANG_TIDY_WARNINGS_H</span></div>
-<div class="ttc" id="aclassClangTidyExample_html"><div class="ttname"><a href="classClangTidyExample.html">ClangTidyExample</a></div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.h:4</div></div>
-<div class="ttc" id="aclassClangTidyExample_html_a3a8820b0b4a621347a329874cda7670c"><div class="ttname"><a href="classClangTidyExample.html#a3a8820b0b4a621347a329874cda7670c">ClangTidyExample::MissingOverride</a></div><div class="ttdeci">void MissingOverride(int value)</div></div>
-<div class="ttc" id="aclassClangTidyExample_html_aa98537260b855217a8c001ef47d8058c"><div class="ttname"><a href="classClangTidyExample.html#aa98537260b855217a8c001ef47d8058c">ClangTidyExample::UnusedFunction</a></div><div class="ttdeci">void UnusedFunction(int value)</div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.cpp:22</div></div>
-<div class="ttc" id="aclassClangTidyExample_html_ab40cd0e626579eebcf716ba23df99f01"><div class="ttname"><a href="classClangTidyExample.html#ab40cd0e626579eebcf716ba23df99f01">ClangTidyExample::ClangTidyExample</a></div><div class="ttdeci">ClangTidyExample()</div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.cpp:12</div></div>
-<div class="ttc" id="aclassClangTidyExample_html_ae6a95d95d335a16a78df942ddcb8514c"><div class="ttname"><a href="classClangTidyExample.html#ae6a95d95d335a16a78df942ddcb8514c">ClangTidyExample::Function</a></div><div class="ttdeci">void Function(int value)</div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.cpp:17</div></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="comment">// Function with a variable that shadows a class member</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classClangTidyWarnings.html#ae92b5e95318f2970a83dc3f1281634fe">ShadowedMember</a>(<span class="keywordtype">int</span> m_data);</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="comment">// Function with a potentially uninitialized member variable</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classClangTidyWarnings.html#a02437dc256c39621322f494969c48e76">UninitializedMember</a>();</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="comment">// Function with a redundant if statement</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classClangTidyWarnings.html#a68f8676842a39171ddca836f21d22346">RedundantIf</a>(<span class="keywordtype">bool</span> condition);</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="comment">// Function with a pointer that could be nullptr</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classClangTidyWarnings.html#abe217f95cf077bb2dee9c8e9c4bbf8b6">NullPtrCheck</a>(<span class="keywordtype">int</span>* ptr);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="comment">// Function with a loop variable that should be const</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classClangTidyWarnings.html#a25ceeae9b4c2eb8a1704900a293e8774">NonConstLoopVariable</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="comment">// Function with a long line exceeding a recommended limit</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classClangTidyWarnings.html#ac7e14c851afe6b55a7c116b43e82c925">LongLineExceedingLimit</a>();</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">int</span> m_data;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;};</div>
+<div class="ttc" id="aclassClangTidyWarnings_html"><div class="ttname"><a href="classClangTidyWarnings.html">ClangTidyWarnings</a></div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.h:3</div></div>
+<div class="ttc" id="aclassClangTidyWarnings_html_a02437dc256c39621322f494969c48e76"><div class="ttname"><a href="classClangTidyWarnings.html#a02437dc256c39621322f494969c48e76">ClangTidyWarnings::UninitializedMember</a></div><div class="ttdeci">int UninitializedMember()</div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.cpp:14</div></div>
+<div class="ttc" id="aclassClangTidyWarnings_html_a0d5eaf8e411ff50e5bbbd5b6d2a67a41"><div class="ttname"><a href="classClangTidyWarnings.html#a0d5eaf8e411ff50e5bbbd5b6d2a67a41">ClangTidyWarnings::UnusedParameter</a></div><div class="ttdeci">void UnusedParameter(int unusedParam)</div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.cpp:6</div></div>
+<div class="ttc" id="aclassClangTidyWarnings_html_a25ceeae9b4c2eb8a1704900a293e8774"><div class="ttname"><a href="classClangTidyWarnings.html#a25ceeae9b4c2eb8a1704900a293e8774">ClangTidyWarnings::NonConstLoopVariable</a></div><div class="ttdeci">void NonConstLoopVariable()</div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.cpp:31</div></div>
+<div class="ttc" id="aclassClangTidyWarnings_html_a54bb0ce491c7f45078138b79ae42ab0e"><div class="ttname"><a href="classClangTidyWarnings.html#a54bb0ce491c7f45078138b79ae42ab0e">ClangTidyWarnings::ClangTidyWarnings</a></div><div class="ttdeci">ClangTidyWarnings()</div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.cpp:3</div></div>
+<div class="ttc" id="aclassClangTidyWarnings_html_a68f8676842a39171ddca836f21d22346"><div class="ttname"><a href="classClangTidyWarnings.html#a68f8676842a39171ddca836f21d22346">ClangTidyWarnings::RedundantIf</a></div><div class="ttdeci">void RedundantIf(bool condition)</div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.cpp:19</div></div>
+<div class="ttc" id="aclassClangTidyWarnings_html_abe217f95cf077bb2dee9c8e9c4bbf8b6"><div class="ttname"><a href="classClangTidyWarnings.html#abe217f95cf077bb2dee9c8e9c4bbf8b6">ClangTidyWarnings::NullPtrCheck</a></div><div class="ttdeci">void NullPtrCheck(int *ptr)</div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.cpp:25</div></div>
+<div class="ttc" id="aclassClangTidyWarnings_html_ac7e14c851afe6b55a7c116b43e82c925"><div class="ttname"><a href="classClangTidyWarnings.html#ac7e14c851afe6b55a7c116b43e82c925">ClangTidyWarnings::LongLineExceedingLimit</a></div><div class="ttdeci">void LongLineExceedingLimit()</div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.cpp:37</div></div>
+<div class="ttc" id="aclassClangTidyWarnings_html_ae92b5e95318f2970a83dc3f1281634fe"><div class="ttname"><a href="classClangTidyWarnings.html#ae92b5e95318f2970a83dc3f1281634fe">ClangTidyWarnings::ShadowedMember</a></div><div class="ttdeci">void ShadowedMember(int m_data)</div><div class="ttdef"><b>Definition:</b> ClangTidyWarnings.cpp:10</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -1,7 +1,8 @@
 var hierarchy =
 [
-    [ "ClangTidyExample", "classClangTidyExample.html", [
-      [ "DerivedExample", "classDerivedExample.html", null ]
+    [ "ClangTidyWarnings", "classClangTidyWarnings.html", null ],
+    [ "MyClass", "classMyClass.html", [
+      [ "MockMyClass", "classMockMyClass.html", null ]
     ] ],
     [ "object", null, [
       [ "clang-tidy-cache.ClangTidyCache", "classclang-tidy-cache_1_1ClangTidyCache.html", null ],
@@ -11,5 +12,10 @@ var hierarchy =
       [ "clang-tidy-cache.ClangTidyRedisCache", "classclang-tidy-cache_1_1ClangTidyRedisCache.html", null ],
       [ "clang-tidy-cache.ClangTidyS3Cache", "classclang-tidy-cache_1_1ClangTidyS3Cache.html", null ],
       [ "clang-tidy-cache.ClangTidyServerCache", "classclang-tidy-cache_1_1ClangTidyServerCache.html", null ]
+    ] ],
+    [ "testing::Test", null, [
+      [ "ClangTidyWarningsTest", "classClangTidyWarningsTest.html", null ],
+      [ "MyClassMockTest", "classMyClassMockTest.html", null ],
+      [ "MyClassTest", "classMyClassTest.html", null ]
     ] ]
 ];

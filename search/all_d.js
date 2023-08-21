@@ -1,16 +1,5 @@
 var searchData=
 [
-  ['readme_2emd_49',['README.md',['../README_8md.html',1,'']]],
-  ['readme_5fcmake_2emd_50',['README_cmake.md',['../README__cmake_8md.html',1,'']]],
-  ['readme_5finstall_2emd_51',['README_install.md',['../README__install_8md.html',1,'']]],
-  ['redis_52',['redis',['../namespaceclang-tidy-cache.html#a9165c425366ed5d12734848cadf3f6cd',1,'clang-tidy-cache']]],
-  ['redis_5fhost_53',['redis_host',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a1eefed62a134c4421b55dbed42524f43',1,'clang-tidy-cache::ClangTidyCacheOpts']]],
-  ['redis_5fnamespace_54',['redis_namespace',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a0e0e471f36e05885fd83ff5c76114ceb',1,'clang-tidy-cache::ClangTidyCacheOpts']]],
-  ['redis_5fpassword_55',['redis_password',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a6be9646dbf76aae9d33def629b526df6',1,'clang-tidy-cache::ClangTidyCacheOpts']]],
-  ['redis_5fport_56',['redis_port',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#af30a7a2721a368c8606181957a7524fe',1,'clang-tidy-cache::ClangTidyCacheOpts']]],
-  ['redis_5fusername_57',['redis_username',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a5baad2a3439633b236aeb3629a10fb02',1,'clang-tidy-cache::ClangTidyCacheOpts']]],
-  ['rest_5fhost_58',['rest_host',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a168ea88b680aabb4dc91cdfccb5ebe5d',1,'clang-tidy-cache::ClangTidyCacheOpts']]],
-  ['rest_5fport_59',['rest_port',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a8670de4e0cd08cef8edb8260a730aff9',1,'clang-tidy-cache::ClangTidyCacheOpts']]],
-  ['rest_5fproto_60',['rest_proto',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a31a7f735028ebe053eca9a6a632cf3cb',1,'clang-tidy-cache::ClangTidyCacheOpts']]],
-  ['run_5fclang_5ftidy_5fcached_61',['run_clang_tidy_cached',['../namespaceclang-tidy-cache.html#af31992d7c253bfc80a3a292a71b7f8e4',1,'clang-tidy-cache']]]
+  ['operator_3d_54',['operator=',['../classMyClass.html#a7e8c7abd1f9db0241a322c69f075f991',1,'MyClass::operator=(const MyClass &amp;)=default'],['../classMyClass.html#ad50295c3bca21c3509c28a0c63f98ac4',1,'MyClass::operator=(MyClass &amp;&amp;)=default']]],
+  ['original_5fargs_55',['original_args',['../classclang-tidy-cache_1_1ClangTidyCacheOpts.html#a88605a2f6605cc5879968609c963abe0',1,'clang-tidy-cache::ClangTidyCacheOpts']]]
 ];

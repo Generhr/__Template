@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['source_5ffile_5fchange_5fre_152',['source_file_change_re',['../namespaceclang-tidy-cache.html#a72a4205773a02df0e55d0d2a6144c0f9',1,'clang-tidy-cache']]]
+  ['myclass_182',['myClass',['../classMyClassTest.html#a8de96626bf3afceccab898c516847ff3',1,'MyClassTest']]],
+  ['mymockclass_183',['myMockClass',['../classMyClassMockTest.html#a1fff1d3e77429dc74508e189b4f69e14',1,'MyClassMockTest']]]
 ];

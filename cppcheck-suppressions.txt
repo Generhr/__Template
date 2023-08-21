@@ -1,18 +1,4 @@
-// Category: Warning
-// Suppress warnings about suppressions that don't match, for some reasons cppcheck shows this message a lot
-//  (e.g.) nofile:0:0: warning: Unmatched suppression: missingIncludeSystem [unmatchedSuppression]
-unmatchedSuppression:*
-
-// Category: Warning
-// Suppress warnings about being unable to find system includes (which it doesn't need to work correctly)
-missingIncludeSystem
-
-// Category: False Positives
-
-// Category: Uncategorised
 cppcheckError  // We cannot act on a bug/missing feature of cppcheck
-functionStatic
-internalAstError
-passedByValue  // Noisy and incorrect sometimes
-preprocessorErrorDirective
 syntaxError  // Ignores code that cppcheck thinks is invalid C++
+
+functionStatic

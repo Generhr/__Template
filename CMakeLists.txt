@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16...3.27 FATAL_ERROR) #? 3.16 - target_precompile_headers
+cmake_minimum_required(VERSION 3.21...3.27 FATAL_ERROR) #? 3.21 - PROJECT_IS_TOP_LEVEL
 
 #==========  Project Details  ==================================================#
 
@@ -14,12 +14,11 @@ project("__Name"
 #============  Safe Guards  ====================================================#
 
 include(cmake/SafeGuards.cmake)
+variable_watch(CMAKE_BUILD_TYPE readonly_guard)
 
 #==========  CMake Variables  ==================================================#
 
 message(STATUS "\n-- Configuring CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n--")
-
-string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" PROJECT_IS_TOP_LEVEL) # NOTE: This variable is set by `project()` in CMake 3.21+.
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory:
 if(PROJECT_IS_TOP_LEVEL)
@@ -43,13 +42,11 @@ set(CMAKE_SUPPRESS_REGENERATION true)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
 # Find number of processors
-if(NOT DEFINED PROCESSOR_COUNT)
-    include(ProcessorCount)
-    ProcessorCount(PROCESSOR_COUNT)
+include(ProcessorCount)
+ProcessorCount(PROCESSOR_COUNT)
 
-    if(PROCESSOR_COUNT EQUAL 0)
-        set(PROCESSOR_COUNT 1)
-    endif()
+if(PROCESSOR_COUNT EQUAL 0)
+    set(PROCESSOR_COUNT 1)
 endif()
 
 set(GIT_SHA
@@ -57,6 +54,25 @@ set(GIT_SHA
     CACHE STRING "SHA this build was generated from"
 )
 string(SUBSTRING "${GIT_SHA}" 0 8 GIT_SHORT_SHA)
+
+#=======  Manual File Additions  ===============================================#
+
+set(CPP_SUPPRESS_LIST # List of files to exclude from cppcheck static analysis
+)
+
+set(CLANG_TIDY_SUPPRESS_LIST # List of files to exclude from clang-tidy static analysis
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/ClangTidyWarnings.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/include/ClangTidyWarnings.h"
+)
+
+set(PRECOMPILED_HEADER_LIST # List of files to exclude from cppcheck and clang-tidy static analysis
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h"
+)
+
+set(HEADER_LIST # List of files to be added manually (not in include/*)
+)
+
+set(SOURCE_LIST # List of files to be added manually (not in src/*.cpp)
+)
 
 #====  Define CMake Module Imports  ============================================#
 
@@ -98,11 +114,6 @@ endif()
 
 include(cmake/Warnings.cmake)
 
-if(ENABLE_DOXYGEN)
-    include(cmake/Doxygen.cmake)
-    enable_doxygen()
-endif()
-
 set(VCPKG_BUILD_DOCS OFF)
 set(VCPKG_BUILD_TESTS OFF)
 set(VCPKG_BUILD_EXAMPLES OFF)
@@ -136,51 +147,45 @@ file(COPY ${COPY_FILES} DESTINATION "${CMAKE_BINARY_DIR}/bin/res")
 
 add_subdirectory(external EXCLUDE_FROM_ALL)
 
-set(PRECOMPILED_HEADER_LIST "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
-
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "[Cc]lang")
     set(WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST "$ENV{EXTERNAL_INCLUDE}")
 endif()
 
-# NOTE: globbing sources is considered bad practice as CMake's generators may not detect new files
-# automatically. Keep that in mind when changing files, or explicitly mention them here.
+# NOTE: globbing sources is considered bad practice as CMake's generators may not detect new files automatically. Keep that in mind when changing files, or explicitly mention them in the relevant `*_LIST` variables
+
+file(GLOB_RECURSE HEADER_LIST include/*)
+list(REMOVE_ITEM HEADER_LIST ${PRECOMPILED_HEADER_LIST})
 
 if(ENABLE_CLANG_TIDY)
-    set(NO_STATIC_CODE_ANALYSIS_LIST # Add here any file you want to exclude from clang-tidy static analysis.
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/ClangTidyWarnings.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/include/ClangTidyWarnings.h"
-    )
+    list(REMOVE_ITEM HEADER_LIST ${CLANG_TIDY_SUPPRESS_LIST})
 endif()
 
-set(HEADER_LIST # Add here any file you want to add manually which is not in include/*.
-)
+file(GLOB_RECURSE SOURCE_LIST src/*.cpp)
+list(REMOVE_ITEM SOURCE_LIST "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp")
 
-file(GLOB_RECURSE HEADER_FILES include/*${SUFFIX_HPPHEADER})
-
-foreach(HEADER_FILE ${HEADER_FILES})
-    if(NOT "${HEADER_FILE}" IN_LIST PRECOMPILED_HEADER_LIST AND NOT "${HEADER_FILE}" IN_LIST NO_STATIC_CODE_ANALYSIS_LIST) #~ https://gitlab.kitware.com/cmake/cmake/-/issues/22091
-        list(APPEND HEADER_LIST ${HEADER_FILE})
-    endif()
-endforeach()
-
-set(SOURCE_LIST # Add here any file you want to add manually which is not in src/*.cpp.
-)
-
-file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
-
-foreach(SOURCE_FILE ${SOURCE_FILES})
-    if(NOT "${SOURCE_FILE}" MATCHES ".*/Main.cpp" AND NOT "${SOURCE_FILE}" IN_LIST NO_STATIC_CODE_ANALYSIS_LIST)
-        list(APPEND SOURCE_LIST ${SOURCE_FILE})
-    endif()
-endforeach()
+if(ENABLE_CLANG_TIDY)
+    list(REMOVE_ITEM SOURCE_LIST ${CLANG_TIDY_SUPPRESS_LIST})
+endif()
 
 #===========  Create Target  ===================================================#
 
 # Delete all cmake files from previous builds
 add_custom_target(clean_build_folder COMMAND git clean -d -f -x)
 
+if(ENABLE_CLANG_TIDY AND CLANG_TIDY_SUPPRESS_LIST)
+    # Create an object library with source files from `CLANG_TIDY_SUPPRESS_LIST` and reset its `CMAKE_CXX_CLANG_TIDY` property to prevent clang-tidy analysis.
+    add_library(CLANG_TIDY_SUPPRESS_LIBRARY OBJECT "${CLANG_TIDY_SUPPRESS_LIST}")
+    set_target_properties(CLANG_TIDY_SUPPRESS_LIBRARY PROPERTIES CXX_CLANG_TIDY "")
+    target_include_directories(CLANG_TIDY_SUPPRESS_LIBRARY PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
+endif()
+
 # Main executable
 if(BUILD_HEADERS_ONLY)
     add_library(${PROJECT_NAME} INTERFACE)
+
+    if(TARGET CLANG_TIDY_SUPPRESS_LIBRARY)
+        target_sources(${PROJECT_NAME} INTERFACE "$<TARGET_OBJECTS:CLANG_TIDY_SUPPRESS_LIBRARY>")
+    endif()
 
     if(VERBOSE_OUTPUT)
         message(STATUS "Created ${PROJECT_NAME} interface library with the following headers:")
@@ -192,15 +197,10 @@ if(BUILD_HEADERS_ONLY)
         message(STATUS "Created ${PROJECT_NAME} interface library")
     endif()
 elseif(BUILD_EXECUTABLE)
-    if(ENABLE_CLANG_TIDY AND NO_STATIC_CODE_ANALYSIS_LIST)
-        # Create a library with the sources from `NO_STATIC_CODE_ANALYSIS_LIST` and reset its `CMAKE_CXX_CLANG_TIDY` property to avoid having clang-tidy analyze the code:
-        add_library(NO_STATIC_CODE_ANALYSIS OBJECT "${NO_STATIC_CODE_ANALYSIS_LIST}")
-        set_target_properties(NO_STATIC_CODE_ANALYSIS PROPERTIES CXX_CLANG_TIDY "")
-        target_include_directories(NO_STATIC_CODE_ANALYSIS PRIVATE "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>")
+    add_executable(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp" "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
 
-        add_executable(${PROJECT_NAME} "src/Main.cpp" "$<TARGET_OBJECTS:NO_STATIC_CODE_ANALYSIS>" "${SOURCE_LIST}" "${HEADER_LIST}")
-    else()
-        add_executable(${PROJECT_NAME} "src/Main.cpp" "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
+    if(TARGET CLANG_TIDY_SUPPRESS_LIBRARY)
+        target_sources(${PROJECT_NAME} PRIVATE "$<TARGET_OBJECTS:CLANG_TIDY_SUPPRESS_LIBRARY>")
     endif()
 
     if(VERBOSE_OUTPUT)
@@ -215,6 +215,10 @@ elseif(BUILD_EXECUTABLE)
     endif()
 else()
     add_library(${PROJECT_NAME} "${SOURCE_LIST}" "${HEADER_LIST}")
+
+    if(TARGET CLANG_TIDY_SUPPRESS_LIBRARY)
+        target_sources(${PROJECT_NAME} PUBLIC "$<TARGET_OBJECTS:CLANG_TIDY_SUPPRESS_LIBRARY>")
+    endif()
 
     if(VERBOSE_OUTPUT)
         message(STATUS "Created ${PROJECT_NAME} static library with the following sources:")
@@ -269,7 +273,10 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_DEBUG_DEFINE})
 #=========  Link Dependencies  =================================================#
 
 # Precompile headers
-if((ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang") OR NOT ENABLE_CLANG_TIDY)
+if(NOT ENABLE_CLANG_TIDY
+   OR ENABLE_CLANG_TIDY
+   AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang"
+)
     target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
 endif()
 
@@ -292,7 +299,7 @@ endif()
 
 if(PROJECT_IS_TOP_LEVEL)
     if(ENABLE_TESTING)
-        enable_testing()
+        include(CTest)
 
         add_library(TESTING_LIBRARY INTERFACE)
 
@@ -301,11 +308,16 @@ if(PROJECT_IS_TOP_LEVEL)
             append_coverage_compiler_flags_to_target(TESTING_LIBRARY)
         endif()
 
-        target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
+        if(TARGET CLANG_TIDY_SUPPRESS_LIBRARY)
+            target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}" "$<TARGET_OBJECTS:CLANG_TIDY_SUPPRESS_LIBRARY>")
+        else()
+            target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
+        endif()
+
         target_include_directories(TESTING_LIBRARY INTERFACE "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
         set_target_properties(
-            ${TESTING_LIBRARY}
+            TESTING_LIBRARY
             PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD}
                        CXX_STANDARD_REQUIRED 17
                        CXX_EXTENSIONS NO
@@ -314,9 +326,7 @@ if(PROJECT_IS_TOP_LEVEL)
         string(TOUPPER "${PROJECT_NAME}_TEST" PROJECT_TEST_DEFINE)
         target_compile_definitions(TESTING_LIBRARY INTERFACE ${PROJECT_TEST_DEFINE})
 
-        if(ENABLE_CLANG_TIDY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-            target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
-        elseif(NOT ENABLE_CLANG_TIDY)
+        if(NOT ENABLE_CLANG_TIDY OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
             target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
         endif()
 
@@ -337,6 +347,13 @@ if(PROJECT_IS_TOP_LEVEL)
 
         add_subdirectory(test)
     endif()
+endif()
+
+#==============  Doxygen  ======================================================#
+
+if(ENABLE_DOXYGEN)
+    include(cmake/Doxygen.cmake)
+    enable_doxygen()
 endif()
 
 #==============  Install  ======================================================#

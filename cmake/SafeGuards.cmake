@@ -20,7 +20,18 @@ if(NOT CMAKE_BUILD_TYPE) # Default build type if none is set.
 else() # Guard against an incorrect build type.
     string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER)
 
-    if(NOT CMAKE_BUILD_TYPE_TOLOWER STREQUAL "debug" AND NOT CMAKE_BUILD_TYPE_TOLOWER STREQUAL "release")
+    if(NOT CMAKE_BUILD_TYPE_TOLOWER STREQUAL "debug"
+       AND NOT CMAKE_BUILD_TYPE_TOLOWER STREQUAL "release"
+       AND NOT CMAKE_BUILD_TYPE_TOLOWER STREQUAL "minsizerel"
+       AND NOT CMAKE_BUILD_TYPE_TOLOWER STREQUAL "relwithdebinfo"
+    )
         message(FATAL_ERROR "Unknown build type \"${CMAKE_BUILD_TYPE}\". Allowed values are Debug, Release (case-insensitive).")
     endif()
 endif()
+
+# Watcher for a variable which emulates readonly property.
+macro(readonly_guard VAR ACCESS VALUE CURRENT_LIST_FILE STACK)
+    if("${ACCESS}" STREQUAL "MODIFIED_ACCESS")
+        message(WARNING "Attempt to change readonly variable '${VAR}' at ${CURRENT_LIST_FILE}!")
+    endif()
+endmacro()

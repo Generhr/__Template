@@ -1,25 +1,40 @@
 #include "ClangTidyWarnings.h"
 
-class DerivedExample : public ClangTidyExample {
-public:
-    // No override specifier for a virtual function
-    void UnusedFunction(int value);
-
-    // Function hides a non-virtual function from the base class
-    void MissingOverride(int value);
-};
-
-ClangTidyExample::ClangTidyExample() {
-    // Uninitialized member
-    m_data = 0;
+ClangTidyWarnings::ClangTidyWarnings() : m_data(0) {
 }
 
-void ClangTidyExample::Function(int value) {
-    // Unused parameter
-    m_data = value;
+void ClangTidyWarnings::UnusedParameter(int unusedParam) {
+    // Warning: Parameter 'unusedParam' is unused
 }
 
-void ClangTidyExample::UnusedFunction(int value) {
-    // Unused parameter
-    m_data = value;
+void ClangTidyWarnings::ShadowedMember(int m_data) {
+    // Warning: Parameter 'm_data' shadows a class member
+}
+
+int ClangTidyWarnings::UninitializedMember() {
+    // Warning: Member 'm_data' is not initialized in this constructor
+    return m_data;
+}
+
+void ClangTidyWarnings::RedundantIf(bool condition) {
+    if (condition) {
+        // Warning: Redundant if statement
+    }
+}
+
+void ClangTidyWarnings::NullPtrCheck(int* ptr) {
+    if (ptr != nullptr) {
+        // Warning: Consider using 'if (ptr)' instead
+    }
+}
+
+void ClangTidyWarnings::NonConstLoopVariable() {
+    for (int i = 0; i < 10; ++i) {
+        // Warning: Loop variable 'i' should be declared as const
+    }
+}
+
+void ClangTidyWarnings::LongLineExceedingLimit() {
+    // Warning: Line exceeds a recommended limit
+    int aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = 42;
 }

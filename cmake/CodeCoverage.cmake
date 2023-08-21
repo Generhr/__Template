@@ -1,7 +1,7 @@
 # Check supported compiler (Clang)
 get_property(LANGUAGES GLOBAL PROPERTY ENABLED_LANGUAGES)
 
-foreach(LANGUAGE ${ENABLED_LANGUAGES})
+foreach(LANGUAGE ${LANGUAGES})
     if(${LANGUAGE} STREQUAL "RC")
         continue() # Skip the Resource Compiler language
     endif()
@@ -58,7 +58,11 @@ set(CMAKE_SHARED_LINKER_FLAGS_COVERAGE
 # Warn if coverage analysis is done with optimized build
 get_property(GENERATOR_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
-if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug" OR GENERATOR_IS_MULTI_CONFIG))
+if(NOT
+   (CMAKE_BUILD_TYPE STREQUAL "Debug"
+    OR NOT CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"
+    OR GENERATOR_IS_MULTI_CONFIG)
+)
     message(WARNING "Code coverage results with an optimized (non-Debug) build may be misleading")
 endif()
 

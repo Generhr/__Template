@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16...3.27 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.21...3.27 FATAL_ERROR)
 
 #==========  Project Details  ==================================================#
 
@@ -15,14 +15,6 @@ endif()
 #========== Add Unit Test(s) ==================================================#
 
 file(GLOB_RECURSE TEST_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-
-if(USE_GOOGLE_MOCK)
-    set(GOOGLE_MOCK_LIBRARIES GTest::gmock_main)
-endif()
-
-set(TEST_LIBRARIES GTest::gtest_main # `gtest_main` forgoes the need for a unit test with a `main()` function and to then include each test file within that unit test.
-                   ${GOOGLE_MOCK_LIBRARIES} TESTING_LIBRARY
-)
 
 foreach(TEST_FILE ${TEST_FILES})
     string(REGEX REPLACE "(.*/)([a-zA-Z0-9_ ]+)(\.cpp)" "\\2" TEST_NAME ${TEST_FILE})
@@ -47,7 +39,15 @@ foreach(TEST_FILE ${TEST_FILES})
         target_set_warnings(${TEST_NAME})
     endif()
 
-    target_link_libraries(${TEST_NAME} PRIVATE ${TEST_LIBRARIES})
+    # Check if this test file requires gmock
+    file(READ ${TEST_FILE} TEST_FILE_CONTENTS)
+
+    if(TEST_FILE_CONTENTS MATCHES "#[ \t]*include[ \t]*[\"<]gmock/gmock\\.h[\">]")
+        target_link_libraries(${TEST_NAME} PRIVATE TESTING_LIBRARY GTest::gmock_main)
+    else()
+        target_link_libraries(${TEST_NAME} PRIVATE TESTING_LIBRARY GTest::gtest_main # `gtest_main` forgoes the need for a unit test with a `main()` function and to then include each test file within that unit test.
+        )
+    endif()
 
     #~ gtest_discover_tests: https://cmake.org/cmake/help/latest/module/GoogleTest.html#command:gtest_discover_tests
     gtest_discover_tests(

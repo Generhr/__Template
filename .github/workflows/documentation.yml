@@ -38,9 +38,9 @@ jobs:
       - name: Run CMake
         uses: lukka/run-cmake@v10
         with:
-          configurePreset: "ninja-multi-configure"
+          configurePreset: "configure-release"
           configurePresetAdditionalArgs: '[`-DENABLE_DOXYGEN=ON`]'
-          buildPreset: "ninja-multi-build-release"
+          buildPreset: "build-release"
           buildPresetAdditionalArgs: '[`--target doxygen`]'
 
       - name: Deploy to GitHub Pages

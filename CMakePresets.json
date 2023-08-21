@@ -7,18 +7,16 @@
     },
     "configurePresets": [
         {
-            "name": "ninja-multi-configure",
-            "displayName": "Ninja-Multi",
-            "description": "Configures the project using the vcpkg toolchain and generates Ninja project files with multi-configuration support.",
-            "generator": "Ninja Multi-Config",
+            "name": "configure-common",
+            "generator": "Ninja",
             "toolchainFile": "${sourceDir}/external/vcpkg/scripts/buildsystems/vcpkg.cmake",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
-                "CMAKE_CONFIGURATION_TYPES": "Debug;Release;RelWithDebInfo",
-                "CMAKE_DEFAULT_BUILD_TYPE": "Debug",
                 "CMAKE_C_COMPILER": "clang",
                 "CMAKE_CXX_COMPILER": "clang++",
-                "ENABLE_DOXYGEN": "OFF",
+                "CMAKE_CXX_VISIBILITY_PRESET": "hidden",
+                "CMAKE_VISIBILITY_INLINES_HIDDEN": "yes",
+                "VERBOSE_OUTPUT": "OFF",
                 "ENABLE_CPPCHECK": "OFF",
                 "ENABLE_CLANG_TIDY": "OFF",
                 "ENABLE_INCLUDE_WHAT_YOU_USE": "OFF",
@@ -29,62 +27,130 @@
                 "ENABLE_IPO": "ON",
                 "ENABLE_WARNINGS": "ON",
                 "ENABLE_WARNINGS_AS_ERRORS": "OFF",
-                "VERBOSE_OUTPUT": "OFF",
-                "ENABLE_TESTING": "OFF",
-                "USE_GOOGLE_MOCK": "OFF",
-                "ENABLE_CODE_COVERAGE": "OFF"
+                "BUILD_HEADERS_ONLY": "OFF",
+                "BUILD_EXECUTABLE": "ON",
+                "BUILD_SHARED_LIBS": "OFF",
+                "ENABLE_CODE_COVERAGE": "OFF",
+                "ENABLE_DOXYGEN": "OFF"
+            },
+            "hidden": true
+        },
+        {
+            "name": "configure-common-debug",
+            "cacheVariables": {
+                "ENABLE_TESTING": "ON"
+            },
+            "warnings": {
+                "dev": false,
+                "uninitialized": false,
+                "unusedCli": false
+            },
+            "hidden": true
+        },
+        {
+            "name": "configure-debug",
+            "inherits": [
+                "configure-common",
+                "configure-common-debug"
+            ],
+            "displayName": "Configure (Debug)",
+            "description": "Configure the project for debugging with detailed compiler warnings and code coverage enabled.",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_CXX_FLAGS": "-DDEBUG_CONFIG"
+            }
+        },
+        {
+            "name": "configure-release-with-debug-info",
+            "inherits": [
+                "configure-common",
+                "configure-common-debug"
+            ],
+            "displayName": "Configure (RelWithDebInfo)",
+            "description": "Configure the project for a release build with debugging information enabled and code coverage enabled.",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "configure-release",
+            "inherits": "configure-common",
+            "displayName": "Configure (Release)",
+            "description": "Configure the project for a release build with code coverage disabled.",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "ENABLE_TESTING": "OFF"
             }
         }
     ],
     "buildPresets": [
         {
-            "name": "ninja-multi-build-debug",
-            "configurePreset": "ninja-multi-configure",
+            "name": "build-debug",
             "displayName": "Build (Debug)",
-            "description": "Builds the project with Ninja Multi-Config in Debug configuration.",
+            "description": "Build the project in Debug mode.",
             "configuration": "Debug",
-            "cleanFirst": false,
-            "jobs": 2
+            "configurePreset": "configure-debug",
+            "cleanFirst": false
         },
         {
-            "name": "ninja-multi-build-release",
-            "configurePreset": "ninja-multi-configure",
+            "name": "build-release-with-debug-info",
+            "displayName": "Build (RelWithDebInfo)",
+            "description": "Build the project in Release mode with debugging information.",
+            "configuration": "RelWithDebInfo",
+            "configurePreset": "configure-release-with-debug-info"
+        },
+        {
+            "name": "build-release",
             "displayName": "Build (Release)",
-            "description": "Builds the project with Ninja Multi-Config in Release configuration.",
+            "description": "Build the project in Release mode.",
             "configuration": "Release",
-            "jobs": 2
+            "configurePreset": "configure-release"
         }
     ],
     "testPresets": [
         {
-            "name": "ninja-multi-test-debug",
-            "configurePreset": "ninja-multi-configure",
-            "configuration": "Debug",
-            "displayName": "Test (Debug)",
+            "name": "test-common",
             "execution": {
                 "noTestsAction": "error",
                 "scheduleRandom": true,
-                "stopOnFailure": true,
-                "jobs": 2
+                "stopOnFailure": true
             },
             "output": {
                 "outputOnFailure": true,
                 "verbosity": "default"
+            },
+            "hidden": true
+        },
+        {
+            "name": "test-debug",
+            "inherits": "test-common",
+            "displayName": "Test (Debug)",
+            "description": "Run tests on the project in Debug mode.",
+            "configurePreset": "configure-debug",
+            "configuration": "Debug",
+            "output": {
+                "verbosity": "default"
             }
         },
         {
-            "name": "ninja-multi-test-release",
-            "configurePreset": "ninja-multi-configure",
-            "configuration": "Release",
-            "displayName": "Test (Release)",
-            "execution": {
-                "noTestsAction": "error",
-                "scheduleRandom": true,
-                "stopOnFailure": true,
-                "jobs": 2
-            },
+            "name": "test-release-with-debug-info",
+            "inherits": "test-common",
+            "displayName": "Test (RelWithDebInfo)",
+            "description": "Run tests on the project in Release mode with debugging information.",
+            "configurePreset": "configure-release-with-debug-info",
+            "configuration": "RelWithDebInfo",
             "output": {
-                "outputOnFailure": true,
+                "verbosity": "default"
+            }
+        },
+        {
+            "name": "test-release",
+            "inherits": "test-common",
+            "displayName": "Test (Release)",
+            "description": "Run tests on the project in Release mode.",
+            "configurePreset": "configure-release",
+            "configuration": "Release",
+            "output": {
                 "quiet": true
             }
         }

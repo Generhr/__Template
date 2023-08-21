@@ -1,18 +1,30 @@
-#ifndef CLANG_TIDY_WARNINGS_H
-#define CLANG_TIDY_WARNINGS_H
+#pragma once
 
-class ClangTidyExample {
+class ClangTidyWarnings {
 public:
-    ClangTidyExample();
+    ClangTidyWarnings();
 
-    void Function(int value);
+    // Function with an unused parameter
+    void UnusedParameter(int unusedParam);
 
-    void UnusedFunction(int value);
+    // Function with a variable that shadows a class member
+    void ShadowedMember(int m_data);
 
-    void MissingOverride(int value);
+    // Function with a potentially uninitialized member variable
+    int UninitializedMember();
+
+    // Function with a redundant if statement
+    void RedundantIf(bool condition);
+
+    // Function with a pointer that could be nullptr
+    void NullPtrCheck(int* ptr);
+
+    // Function with a loop variable that should be const
+    void NonConstLoopVariable();
+
+    // Function with a long line exceeding a recommended limit
+    void LongLineExceedingLimit();
 
 private:
     int m_data;
 };
-
-#endif  // CLANG_TIDY_WARNINGS_H

@@ -85,9 +85,9 @@ jobs:
       - name: Run vcpkg
         uses: lukka/run-cmake@v10
         with:
-          configurePreset: "ninja-multi-configure"
+          configurePreset: "configure-release"
           # Build it because something may have broken in the cpp/hpp files:
-          buildPreset: "ninja-multi-build-release"
+          buildPreset: "build-release"
           buildPresetAdditionalArgs: '[`--target "${{ env.SAFE_REPOSITORY_NAME }}"`]'
 
       # Only commit and push if this is not a template project anymore:

@@ -6,6 +6,9 @@ option(ENABLE_CPPCHECK "Enable static analysis with cppcheck." OFF)
 option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy." OFF)
 option(ENABLE_INCLUDE_WHAT_YOU_USE "Enable static analysis with include what you use." OFF)
 
+cmake_dependent_option(ENABLE_STATIC_ANALYZERS "" OFF "NOT (ENABLE_CPPCHECK OR ENABLE_CLANG_TIDY OR ENABLE_INCLUDE_WHAT_YOU_USE)" ON)
+mark_as_advanced(ENABLE_STATIC_ANALYZERS)
+
 option(ENABLE_SANITIZE_ADDR "Enable address sanitize." OFF)
 option(ENABLE_SANITIZE_UNDEF "Enable undefined sanitize." OFF)
 option(ENABLE_SANITIZE_LEAK "Enable leak sanitize (Gcc/Clang only)." OFF)
@@ -23,7 +26,6 @@ option(BUILD_SHARED_LIBS "Build libraries as shared as opposed to static." OFF)
 option(ENABLE_DOXYGEN "Enable to create a doxygen build target (doxygen)." OFF)
 
 option(ENABLE_TESTING "Enable to create a unit test build target (unit_tests)." OFF)
-option(USE_GOOGLE_MOCK "Use the GoogleMock project for extending the unit tests." OFF)
 option(ENABLE_CODE_COVERAGE "Enable to create a Code Coverage build target (coverage)." OFF)
 
 if(NOT PROJECT_IS_TOP_LEVEL)
@@ -45,6 +47,5 @@ if(NOT PROJECT_IS_TOP_LEVEL)
         ENABLE_DOXYGEN
         ENABLE_TESTING
         ENABLE_CODE_COVERAGE
-        USE_GOOGLE_MOCK
     )
 endif()

@@ -68,25 +68,26 @@ set(PRECOMPILED_HEADER_LIST # List of files to exclude from cppcheck and clang-t
     "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h"
 )
 
-set(HEADER_LIST # List of files to be added manually (not in include/*)
+set(MANUAL_HEADER_LIST # List of files to be added manually (not in include/*)
 )
 
-set(SOURCE_LIST # List of files to be added manually (not in src/*.cpp)
+set(MANUAL_SOURCE_LIST # List of files to be added manually (not in src/*.cpp)
 )
 
 #====  Define CMake Module Imports  ============================================#
 
+include(CMakeParseArguments)
+
 include(cmake/Options.cmake)
+
+include(cmake/Utilities.cmake)
 
 include(cmake/UpdateSubmodules.cmake)
 
 include(cmake/Cache.cmake)
 enable_cache()
 
-if(ENABLE_CPPCHECK
-   OR ENABLE_CLANG_TIDY
-   OR ENABLE_INCLUDE_WHAT_YOU_USE
-)
+if(ENABLE_STATIC_ANALYZERS)
     include(cmake/StaticAnalyzers.cmake)
 
     if(ENABLE_CPPCHECK)
@@ -147,6 +148,8 @@ file(COPY ${COPY_FILES} DESTINATION "${CMAKE_BINARY_DIR}/bin/res")
 
 add_subdirectory(external EXCLUDE_FROM_ALL)
 
+set(WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST)
+
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "[Cc]lang")
     set(WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST "$ENV{EXTERNAL_INCLUDE}")
 endif()
@@ -155,6 +158,8 @@ endif()
 
 file(GLOB_RECURSE HEADER_LIST include/*)
 list(REMOVE_ITEM HEADER_LIST ${PRECOMPILED_HEADER_LIST})
+list(APPEND HEADER_LIST ${MANUAL_HEADER_LIST})
+list(REMOVE_DUPLICATES HEADER_LIST)
 
 if(ENABLE_CLANG_TIDY)
     list(REMOVE_ITEM HEADER_LIST ${CLANG_TIDY_SUPPRESS_LIST})
@@ -162,6 +167,8 @@ endif()
 
 file(GLOB_RECURSE SOURCE_LIST src/*.cpp)
 list(REMOVE_ITEM SOURCE_LIST "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp")
+list(APPEND SOURCE_LIST ${MANUAL_SOURCE_LIST})
+list(REMOVE_DUPLICATES SOURCE_LIST)
 
 if(ENABLE_CLANG_TIDY)
     list(REMOVE_ITEM SOURCE_LIST ${CLANG_TIDY_SUPPRESS_LIST})
@@ -267,16 +274,21 @@ endif()
 
 #========  Compile Definitions  ================================================#
 
+if(${CMAKE_CXX_COMPILER} MATCHES "cl.exe")
+    if(BUILD_HEADERS_ONLY)
+        target_compile_options(${PROJECT_NAME} INTERFACE /EHsc)
+    else()
+        target_compile_options(${PROJECT_NAME} PRIVATE /EHsc)
+    endif()
+endif()
+
 string(TOUPPER "${PROJECT_NAME}_DEBUG" PROJECT_DEBUG_DEFINE)
 target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_DEBUG_DEFINE})
 
 #=========  Link Dependencies  =================================================#
 
 # Precompile headers
-if(NOT ENABLE_CLANG_TIDY
-   OR ENABLE_CLANG_TIDY
-   AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang"
-)
+if(NOT ENABLE_CLANG_TIDY OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
     target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
 endif()
 
@@ -322,6 +334,10 @@ if(PROJECT_IS_TOP_LEVEL)
                        CXX_STANDARD_REQUIRED 17
                        CXX_EXTENSIONS NO
         )
+
+        if(${CMAKE_CXX_COMPILER} MATCHES "cl.exe")
+            target_compile_options(TESTING_LIBRARY INTERFACE /EHsc)
+        endif()
 
         string(TOUPPER "${PROJECT_NAME}_TEST" PROJECT_TEST_DEFINE)
         target_compile_definitions(TESTING_LIBRARY INTERFACE ${PROJECT_TEST_DEFINE})

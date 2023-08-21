@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 
     // This line ensures that ClangTidyWarnings.cpp is compiled to test whether it is correctly excluded from clang-tidy
     // as it is listed in `NO_STATIC_CODE_ANALYSIS_LIST`.
-    ClangTidyWarnings example;
+    const ClangTidyWarnings example;
 
     // Address Sanitizer example (commented out)
     // int *x = new int[42];

@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 10
 
     env:
-      ADDITIONAL_ARGS: ${{ matrix.os == 'windows-latest' && '[`-DENABLE_CODE_COVERAGE=ON`]' }}
+      ADDITIONAL_ARGS: ${{ matrix.os == 'windows-latest' && '[`-DENABLE_CODE_COVERAGE=ON`]' || '[]' }}
 
     steps:
       - name: Checkout

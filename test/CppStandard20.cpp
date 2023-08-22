@@ -20,6 +20,8 @@ TEST(CppStandard20, Concepts) {
     EXPECT_FALSE(Integral<double>);
 }
 
+#ifdef _WIN32
+
 #include <vector>
 #include <ranges>
 
@@ -29,3 +31,5 @@ TEST(CppStandard20, Ranges) {
 
     EXPECT_EQ(std::ranges::distance(even_numbers), 2);
 }
+
+#endif  // _WIN32

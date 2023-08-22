@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.21...3.27 FATAL_ERROR) #? 3.21 - PROJECT_IS_TOP
 
 #==========  Project Details  ==================================================#
 
-# NOTE: update this with your new project's details.
-
 project("__Name"
         VERSION "0.1.0" # NOTE: Listing the version is nice here since it sets lots of useful variables.
         DESCRIPTION "__Description"
@@ -64,7 +62,7 @@ set(CLANG_TIDY_SUPPRESS_LIST # List of files to exclude from clang-tidy static a
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ClangTidyWarnings.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/include/ClangTidyWarnings.h"
 )
 
-set(PRECOMPILED_HEADER_LIST # List of files to exclude from cppcheck and clang-tidy static analysis
+set(PRECOMPILED_HEADER_LIST # List of files to be precompiled
     "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h"
 )
 
@@ -136,14 +134,6 @@ if(UNIX)
     add_compile_options("$<$<CONFIG:DEBUG>:-D_DEBUG>")
 endif()
 
-#==========  Configure Files  ==================================================#
-
-add_subdirectory(configure)
-
-# Move any textures so that they are relative to the executable
-file(GLOB_RECURSE COPY_FILES "res/*")
-file(COPY ${COPY_FILES} DESTINATION "${CMAKE_BINARY_DIR}/bin/res")
-
 #========== Add Source Files ==================================================#
 
 add_subdirectory(external EXCLUDE_FROM_ALL)
@@ -154,16 +144,12 @@ if("${CMAKE_CXX_COMPILER_ID}" MATCHES "[Cc]lang")
     set(WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST "$ENV{EXTERNAL_INCLUDE}")
 endif()
 
-# NOTE: globbing sources is considered bad practice as CMake's generators may not detect new files automatically. Keep that in mind when changing files, or explicitly mention them in the relevant `*_LIST` variables
+# NOTE: globbing sources is considered bad practice as CMake's generators may not detect new files automatically. Keep that in mind when changing files, or explicitly mention them in the relevant `MANUAL_*_LIST` variables
 
 file(GLOB_RECURSE HEADER_LIST include/*)
 list(REMOVE_ITEM HEADER_LIST ${PRECOMPILED_HEADER_LIST})
 list(APPEND HEADER_LIST ${MANUAL_HEADER_LIST})
 list(REMOVE_DUPLICATES HEADER_LIST)
-
-if(ENABLE_CLANG_TIDY)
-    list(REMOVE_ITEM HEADER_LIST ${CLANG_TIDY_SUPPRESS_LIST})
-endif()
 
 file(GLOB_RECURSE SOURCE_LIST src/*.cpp)
 list(REMOVE_ITEM SOURCE_LIST "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp")
@@ -171,8 +157,13 @@ list(APPEND SOURCE_LIST ${MANUAL_SOURCE_LIST})
 list(REMOVE_DUPLICATES SOURCE_LIST)
 
 if(ENABLE_CLANG_TIDY)
+    list(REMOVE_ITEM HEADER_LIST ${CLANG_TIDY_SUPPRESS_LIST})
     list(REMOVE_ITEM SOURCE_LIST ${CLANG_TIDY_SUPPRESS_LIST})
 endif()
+
+#==========  Configure Files  ==================================================#
+
+add_subdirectory(configure)
 
 #===========  Create Target  ===================================================#
 
@@ -274,7 +265,7 @@ endif()
 
 #========  Compile Definitions  ================================================#
 
-if(${CMAKE_CXX_COMPILER} MATCHES "cl.exe") # I don't know why this flag is stripped with the MSVC compiler
+if(${CMAKE_CXX_COMPILER} MATCHES "cl.exe") # I don't know why this flag is stripped from the MSVC compiler
     if(BUILD_HEADERS_ONLY)
         target_compile_options(${PROJECT_NAME} INTERFACE /EHsc)
     else()
@@ -292,6 +283,7 @@ if(NOT ENABLE_CLANG_TIDY OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
     target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
 endif()
 
+# Link libraries
 find_package(cxxopts CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)

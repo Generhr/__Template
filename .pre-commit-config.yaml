@@ -25,7 +25,6 @@ repos:
   - repo: https://github.com/pocc/pre-commit-hooks
     rev: v1.3.5
     hooks:
-      #- id: include-what-you-use
       - id: clang-format
         args: ["--no-diff"]
 

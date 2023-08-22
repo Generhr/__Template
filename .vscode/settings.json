@@ -318,6 +318,8 @@
     ],
     "cSpell.words": [
         "codecov",
+        "coro",
+        "DCMAKE",
         "DXTRACE",
         "FILEW",
         "gcovr",

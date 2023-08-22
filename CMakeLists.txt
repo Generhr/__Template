@@ -274,7 +274,7 @@ endif()
 
 #========  Compile Definitions  ================================================#
 
-if(${CMAKE_CXX_COMPILER} MATCHES "cl.exe")
+if(${CMAKE_CXX_COMPILER} MATCHES "cl.exe") # I don't know why this flag is stripped with the MSVC compiler
     if(BUILD_HEADERS_ONLY)
         target_compile_options(${PROJECT_NAME} INTERFACE /EHsc)
     else()
@@ -311,7 +311,7 @@ endif()
 
 if(PROJECT_IS_TOP_LEVEL)
     if(ENABLE_TESTING)
-        include(CTest)
+        include(CTest) # NOTE: Replace this with `enable_testing()` if you get annoyed with all the build targets that `CTest` adds.
 
         add_library(TESTING_LIBRARY INTERFACE)
 

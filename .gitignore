@@ -1,5 +1,4 @@
 # User spesific settings
-CMakeUserPresets.json
 
 # VSCode
 .vscode/*

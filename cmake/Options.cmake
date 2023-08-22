@@ -23,10 +23,10 @@ option(BUILD_HEADERS_ONLY "Build the project as a header-only library." OFF)
 option(BUILD_EXECUTABLE "Build the project as an executable, rather than a library." ON)
 option(BUILD_SHARED_LIBS "Build libraries as shared as opposed to static." OFF)
 
-option(ENABLE_DOXYGEN "Enable to create a doxygen build target (doxygen)." OFF)
-
 option(ENABLE_TESTING "Enable to create a unit test build target (unit_tests)." OFF)
 option(ENABLE_CODE_COVERAGE "Enable to create a Code Coverage build target (coverage)." OFF)
+
+option(ENABLE_DOXYGEN "Enable to create a doxygen build target (doxygen)." OFF)
 
 if(NOT PROJECT_IS_TOP_LEVEL)
     mark_as_advanced(
@@ -44,8 +44,8 @@ if(NOT PROJECT_IS_TOP_LEVEL)
         BUILD_HEADERS_ONLY
         BUILD_EXECUTABLE
         BUILD_SHARED_LIBS
-        ENABLE_DOXYGEN
         ENABLE_TESTING
         ENABLE_CODE_COVERAGE
+        ENABLE_DOXYGEN
     )
 endif()

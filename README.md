@@ -84,8 +84,8 @@ C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\ucrt
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\winrt
 ```
-- Modify `CMAKE_C_COMPILER` and `CMAKE_CXX_COMPILER` in [CMakeUserPresets.json](CMakeUserPresets.json) to the compiler you wish to use
-- Modify `"generator"` in [CMakeUserPresets.json](CMakeUserPresets.json) to the generator you wish to use although this project is geared towards Ninja or Ninja-Multi-Config generators
+- Modify `"generator"` in [CMakeUserPresets.json](CMakeUserPresets.json#L11) to the generator you wish to use although this project is geared towards Ninja or Ninja-Multi-Config generators
+- Modify `CMAKE_C_COMPILER` and `CMAKE_CXX_COMPILER` in [CMakeUserPresets.json](CMakeUserPresets.json#L23) to the compiler you wish to use
 - (Optional) Automate unit tests with [git hooks](https://www.redhat.com/sysadmin/git-hooks) (for example: [pre-commit](tools/__Setup/pre-commit))
 - (Optional) Install the various [hooks](https://pre-commit.com/hooks.html) listed in [.pre-commit-config.yaml](.pre-commit-config.yaml) for use with pre-commit or delete the file if you don't intend to use it. Pre-commit can be automated with git hooks like ctest above
 

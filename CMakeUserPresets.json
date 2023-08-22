@@ -1,0 +1,161 @@
+{
+    "version": 7,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 27,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "user-configure-common",
+            "generator": "Ninja",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "toolset": {
+                "value": "host=x64",
+                "strategy": "external"
+            },
+            "toolchainFile": "${sourceDir}/external/vcpkg/scripts/buildsystems/vcpkg.cmake",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_CXX_VISIBILITY_PRESET": "hidden",
+                "CMAKE_VISIBILITY_INLINES_HIDDEN": "yes",
+                "VERBOSE_OUTPUT": "OFF",
+                "ENABLE_CPPCHECK": "OFF",
+                "ENABLE_CLANG_TIDY": "OFF",
+                "ENABLE_INCLUDE_WHAT_YOU_USE": "OFF",
+                "ENABLE_SANITIZE_ADDR": "OFF",
+                "ENABLE_SANITIZE_UNDEF": "OFF",
+                "ENABLE_SANITIZE_LEAK": "OFF",
+                "ENABLE_SANITIZE_THREAD": "OFF",
+                "ENABLE_IPO": "ON",
+                "ENABLE_WARNINGS": "ON",
+                "ENABLE_WARNINGS_AS_ERRORS": "OFF",
+                "BUILD_HEADERS_ONLY": "OFF",
+                "BUILD_EXECUTABLE": "ON",
+                "BUILD_SHARED_LIBS": "OFF",
+                "ENABLE_CODE_COVERAGE": "OFF",
+                "ENABLE_DOXYGEN": "OFF"
+            },
+            "hidden": true
+        },
+        {
+            "name": "user-configure-common-debug",
+            "cacheVariables": {
+                "ENABLE_TESTING": "ON"
+            },
+            "warnings": {
+                "dev": true,
+                "uninitialized": true,
+                "unusedCli": true
+            },
+            "hidden": true
+        },
+        {
+            "name": "user-configure-debug",
+            "inherits": [
+                "user-configure-common",
+                "user-configure-common-debug"
+            ],
+            "displayName": "Configure (Debug)",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_CXX_FLAGS": "-DDEBUG_CONFIG"
+            }
+        },
+        {
+            "name": "user-configure-release-with-debug-info",
+            "inherits": [
+                "user-configure-common",
+                "user-configure-common-debug"
+            ],
+            "displayName": "Configure (RelWithDebInfo)",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "user-configure-release",
+            "inherits": "user-configure-common",
+            "displayName": "Configure (Release)",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "ENABLE_TESTING": "OFF"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "user-build-debug",
+            "displayName": "Build (Debug)",
+            "configuration": "Debug",
+            "configurePreset": "user-configure-debug",
+            "cleanFirst": false,
+            "jobs": 12
+        },
+        {
+            "name": "user-build-release-with-debug-info",
+            "displayName": "Build (RelWithDebInfo)",
+            "configuration": "RelWithDebInfo",
+            "configurePreset": "user-configure-release-with-debug-info",
+            "jobs": 12
+        },
+        {
+            "name": "user-build-release",
+            "displayName": "Build (Release)",
+            "configuration": "Release",
+            "configurePreset": "user-configure-release",
+            "jobs": 12
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "user-test-common",
+            "execution": {
+                "noTestsAction": "error",
+                "scheduleRandom": true,
+                "stopOnFailure": true,
+                "jobs": 12
+            },
+            "output": {
+                "outputOnFailure": true,
+                "verbosity": "default"
+            },
+            "hidden": true
+        },
+        {
+            "name": "user-test-debug",
+            "inherits": "user-test-common",
+            "displayName": "Test (Debug)",
+            "configurePreset": "user-configure-debug",
+            "configuration": "Debug",
+            "output": {
+                "verbosity": "default"
+            }
+        },
+        {
+            "name": "user-test-release-with-debug-info",
+            "inherits": "user-test-common",
+            "displayName": "Test (RelWithDebInfo)",
+            "configurePreset": "user-configure-release-with-debug-info",
+            "configuration": "RelWithDebInfo",
+            "output": {
+                "verbosity": "default"
+            }
+        },
+        {
+            "name": "user-test-release",
+            "inherits": "user-test-common",
+            "displayName": "Test (Release)",
+            "configurePreset": "user-configure-release",
+            "configuration": "Release",
+            "output": {
+                "quiet": true
+            }
+        }
+    ]
+}

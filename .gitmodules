@@ -1,3 +1,6 @@
 [submodule "external/vcpkg"]
 	path = external/vcpkg
 	url = https://github.com/microsoft/vcpkg
+[submodule "external/ctcache"]
+	path = external/ctcache
+	url = https://github.com/Onimuru/ctcache

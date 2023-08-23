@@ -62,8 +62,10 @@ Headers go in [include/](include/), source code in [src/](src/), and unit tests 
   - [Cppcheck](https://cppcheck.sourceforge.io/)
   - [Clang-Tidy](https://releases.llvm.org/download.html)
   - [Include what you use](https://include-what-you-use.org/downloads/) (this must be built manually, I think I successfully build it on windows with Clang)
-- (Optional, **Clang compiler only**) Code Coverage: [llvm-profdata](https://llvm.org/docs/CommandGuide/llvm-profdata.html) and [llvm-cov](https://llvm.org/docs/CommandGuide/llvm-cov.html) (download with [LLVM](https://releases.llvm.org/download.html))
-- (Optional) Documentation: [Doxygen](https://www.doxygen.nl/download.html) and [Graphviz](https://graphviz.org/download/) (not really necessary to install this locally as documentation can be built and automatically deployed by workflows)
+- (Optional*, **Clang compiler only**) Code Coverage: [llvm-profdata](https://llvm.org/docs/CommandGuide/llvm-profdata.html) and [llvm-cov](https://llvm.org/docs/CommandGuide/llvm-cov.html) (download with [LLVM](https://releases.llvm.org/download.html))
+- (Optional*) Documentation: [Doxygen](https://www.doxygen.nl/download.html) and [Graphviz](https://graphviz.org/download/)
+
+*It is not necessary to install the software for Code Coverage and Documentation locally as they can be built and automatically deployed by workflows
 
 ## Additional setup
 

@@ -31,10 +31,8 @@ creds.js
 *.tsv.gz
 *.xlsx
 
-
 # Mac/OSX
 .DS_Store
-
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

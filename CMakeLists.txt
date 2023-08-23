@@ -55,7 +55,7 @@ string(SUBSTRING "${GIT_SHA}" 0 8 GIT_SHORT_SHA)
 
 #=======  Manual File Additions  ===============================================#
 
-set(SKIP_SUPPRESS_LIST # List of files to exclude from cppcheck and clang-tidy static analysis
+set(SKIP_LINTING_LIST # List of files to exclude from cppcheck and clang-tidy static analysis
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ClangTidyWarnings.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/include/ClangTidyWarnings.h"
 )
 
@@ -142,7 +142,7 @@ endif()
 
 add_subdirectory(external EXCLUDE_FROM_ALL)
 
-foreach(SOURCE_FILE IN LISTS CLANG_TIDY_SUPPRESS_LIST)
+foreach(SOURCE_FILE IN LISTS SKIP_LINTING_LIST)
     set_source_files_properties(${SOURCE_FILE} PROPERTIES SKIP_LINTING ON)
 endforeach()
 

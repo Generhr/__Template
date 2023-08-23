@@ -14,7 +14,7 @@ macro(enable_cppcheck)
             # Set export commands on for use with `--project`
             set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-            foreach(FILE_PATH ${SKIP_SUPPRESS_LIST})
+            foreach(FILE_PATH ${SKIP_LINTING_LIST})
                 get_filename_component(FILE_NAME ${FILE_PATH} NAME)
 
                 list(APPEND SUPPRESS_FILES "--suppress=*:*${FILE_NAME}")

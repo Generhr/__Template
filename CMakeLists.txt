@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21...3.27 FATAL_ERROR) #? 3.21 - PROJECT_IS_TOP_LEVEL
+cmake_minimum_required(VERSION 3.27...3.27 FATAL_ERROR) #? 3.27 - SKIP_LINTING
 
 #==========  Project Details  ==================================================#
 
@@ -55,10 +55,7 @@ string(SUBSTRING "${GIT_SHA}" 0 8 GIT_SHORT_SHA)
 
 #=======  Manual File Additions  ===============================================#
 
-set(CPP_SUPPRESS_LIST # List of files to exclude from cppcheck static analysis
-)
-
-set(CLANG_TIDY_SUPPRESS_LIST # List of files to exclude from clang-tidy static analysis
+set(SKIP_SUPPRESS_LIST # List of files to exclude from cppcheck and clang-tidy static analysis
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ClangTidyWarnings.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/include/ClangTidyWarnings.h"
 )
 
@@ -127,22 +124,27 @@ option(VCPKG_APPLOCAL_DEPS "Automatically copy dependencies into the output dire
 
 include(${CMAKE_SOURCE_DIR}/external/vcpkg/scripts/buildsystems/vcpkg.cmake)
 
-#============== OS Fixes ======================================================#
+#=========  Compiler/OS Fixes  =================================================#
 
-# This will allow the use of the same _DEBUG macro available in both Linux and Windows environment. Easy to put Debug specific code:
+if(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc") # Microsoft’s compiler is super old and they care a lot about backwards compatibility so this needs to be added manually
+endif(MSVC)
+
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "[Cc]lang")
+    set(WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST "$ENV{EXTERNAL_INCLUDE}")
+endif()
+
 if(UNIX)
-    add_compile_options("$<$<CONFIG:DEBUG>:-D_DEBUG>")
+    add_compile_options("$<$<CONFIG:DEBUG>:-D_DEBUG>") # This will allow the use of the same _DEBUG macro available in both Linux and Windows environment. Easy to put Debug specific code
 endif()
 
 #========== Add Source Files ==================================================#
 
 add_subdirectory(external EXCLUDE_FROM_ALL)
 
-set(WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST)
-
-if("${CMAKE_CXX_COMPILER_ID}" MATCHES "[Cc]lang")
-    set(WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST "$ENV{EXTERNAL_INCLUDE}")
-endif()
+foreach(SOURCE_FILE IN LISTS CLANG_TIDY_SUPPRESS_LIST)
+    set_source_files_properties(${SOURCE_FILE} PROPERTIES SKIP_LINTING ON)
+endforeach()
 
 # NOTE: globbing sources is considered bad practice as CMake's generators may not detect new files automatically. Keep that in mind when changing files, or explicitly mention them in the relevant `MANUAL_*_LIST` variables
 
@@ -156,11 +158,6 @@ list(REMOVE_ITEM SOURCE_LIST "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp")
 list(APPEND SOURCE_LIST ${MANUAL_SOURCE_LIST})
 list(REMOVE_DUPLICATES SOURCE_LIST)
 
-if(ENABLE_CLANG_TIDY)
-    list(REMOVE_ITEM HEADER_LIST ${CLANG_TIDY_SUPPRESS_LIST})
-    list(REMOVE_ITEM SOURCE_LIST ${CLANG_TIDY_SUPPRESS_LIST})
-endif()
-
 #==========  Configure Files  ==================================================#
 
 add_subdirectory(configure)
@@ -170,20 +167,9 @@ add_subdirectory(configure)
 # Delete all cmake files from previous builds
 add_custom_target(clean_build_folder COMMAND git clean -d -f -x)
 
-if(ENABLE_CLANG_TIDY AND CLANG_TIDY_SUPPRESS_LIST)
-    # Create an object library with source files from `CLANG_TIDY_SUPPRESS_LIST` and reset its `CMAKE_CXX_CLANG_TIDY` property to prevent clang-tidy analysis.
-    add_library(CLANG_TIDY_SUPPRESS_LIBRARY OBJECT "${CLANG_TIDY_SUPPRESS_LIST}")
-    set_target_properties(CLANG_TIDY_SUPPRESS_LIBRARY PROPERTIES CXX_CLANG_TIDY "")
-    target_include_directories(CLANG_TIDY_SUPPRESS_LIBRARY PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
-endif()
-
 # Main executable
 if(BUILD_HEADERS_ONLY)
     add_library(${PROJECT_NAME} INTERFACE)
-
-    if(TARGET CLANG_TIDY_SUPPRESS_LIBRARY)
-        target_sources(${PROJECT_NAME} INTERFACE "$<TARGET_OBJECTS:CLANG_TIDY_SUPPRESS_LIBRARY>")
-    endif()
 
     if(VERBOSE_OUTPUT)
         message(STATUS "Created ${PROJECT_NAME} interface library with the following headers:")
@@ -197,10 +183,6 @@ if(BUILD_HEADERS_ONLY)
 elseif(BUILD_EXECUTABLE)
     add_executable(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp" "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
 
-    if(TARGET CLANG_TIDY_SUPPRESS_LIBRARY)
-        target_sources(${PROJECT_NAME} PRIVATE "$<TARGET_OBJECTS:CLANG_TIDY_SUPPRESS_LIBRARY>")
-    endif()
-
     if(VERBOSE_OUTPUT)
         message(STATUS "Created ${PROJECT_NAME} binary with the following sources:")
         message(STATUS "* ${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp")
@@ -213,10 +195,6 @@ elseif(BUILD_EXECUTABLE)
     endif()
 else()
     add_library(${PROJECT_NAME} "${SOURCE_LIST}" "${HEADER_LIST}")
-
-    if(TARGET CLANG_TIDY_SUPPRESS_LIBRARY)
-        target_sources(${PROJECT_NAME} PUBLIC "$<TARGET_OBJECTS:CLANG_TIDY_SUPPRESS_LIBRARY>")
-    endif()
 
     if(VERBOSE_OUTPUT)
         message(STATUS "Created ${PROJECT_NAME} static library with the following sources:")
@@ -265,14 +243,6 @@ endif()
 
 #========  Compile Definitions  ================================================#
 
-if(${CMAKE_CXX_COMPILER} MATCHES "cl.exe") # I don't know why this flag is stripped from the MSVC compiler
-    if(BUILD_HEADERS_ONLY)
-        target_compile_options(${PROJECT_NAME} INTERFACE /EHsc)
-    else()
-        target_compile_options(${PROJECT_NAME} PRIVATE /EHsc)
-    endif()
-endif()
-
 string(TOUPPER "${PROJECT_NAME}_DEBUG" PROJECT_DEBUG_DEFINE)
 target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_DEBUG_DEFINE})
 
@@ -312,11 +282,7 @@ if(PROJECT_IS_TOP_LEVEL)
             append_coverage_compiler_flags_to_target(TESTING_LIBRARY)
         endif()
 
-        if(TARGET CLANG_TIDY_SUPPRESS_LIBRARY)
-            target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}" "$<TARGET_OBJECTS:CLANG_TIDY_SUPPRESS_LIBRARY>")
-        else()
-            target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
-        endif()
+        target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
 
         target_include_directories(TESTING_LIBRARY INTERFACE "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
@@ -326,10 +292,6 @@ if(PROJECT_IS_TOP_LEVEL)
                        CXX_STANDARD_REQUIRED 17
                        CXX_EXTENSIONS NO
         )
-
-        if(${CMAKE_CXX_COMPILER} MATCHES "cl.exe")
-            target_compile_options(TESTING_LIBRARY INTERFACE /EHsc)
-        endif()
 
         string(TOUPPER "${PROJECT_NAME}_TEST" PROJECT_TEST_DEFINE)
         target_compile_definitions(TESTING_LIBRARY INTERFACE ${PROJECT_TEST_DEFINE})

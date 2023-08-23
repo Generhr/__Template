@@ -186,6 +186,19 @@
     "cSpell.dictionaries": [
         "cpp"
     ],
+    "cSpell.words": [
+        "codecov",
+        "coro",
+        "DCMAKE",
+        "DXTRACE",
+        "FILEW",
+        "gcovr",
+        "HRESULT",
+        "kwargs",
+        "lcov",
+        "pargs",
+        "vcpkg"
+    ],
     //=  Doxygen Documentation Generator  =========================================//
     "doxdocgen.cpp.tparamTemplate": "@tparam {param} ",
     "doxdocgen.file.fileTemplate": "@file {name}",
@@ -315,18 +328,5 @@
         "*.h(pp)?",
         "*.cc",
         "*.c(pp)?"
-    ],
-    "cSpell.words": [
-        "codecov",
-        "coro",
-        "DCMAKE",
-        "DXTRACE",
-        "FILEW",
-        "gcovr",
-        "HRESULT",
-        "kwargs",
-        "lcov",
-        "pargs",
-        "vcpkg"
     ],
 }

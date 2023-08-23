@@ -1,16 +1,6 @@
 var searchData=
 [
-  ['main_39',['main',['../namespaceclang-tidy-cache.html#ae5a9360827a85a9471eba9bd0e140848',1,'clang-tidy-cache.main()'],['../Main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main(int argc, char **argv):&#160;Main.cpp']]],
-  ['main_2ecpp_40',['Main.cpp',['../Main_8cpp.html',1,'']]],
-  ['mock_5fmethod_41',['MOCK_METHOD',['../classMockMyClass.html#a4e006ff62956d326281fc66b931c1362',1,'MockMyClass::MOCK_METHOD(int, Divide,(int a, int b),(override))'],['../classMockMyClass.html#a382596c951c95dc6c97e70a41fbb17f2',1,'MockMyClass::MOCK_METHOD(int, Subtract,(int a, int b),(override))'],['../classMockMyClass.html#a4bbb4e1281a54ecb3b71ea6141218fdc',1,'MockMyClass::MOCK_METHOD(int, Add,(int a, int b),(override))']]],
-  ['mockmyclass_42',['MockMyClass',['../classMockMyClass.html',1,'']]],
-  ['myclass_43',['myClass',['../classMyClassTest.html#a8de96626bf3afceccab898c516847ff3',1,'MyClassTest']]],
-  ['myclass_44',['MyClass',['../classMyClass.html#ab29da05d8b79a5b93309bf1af2bc09ea',1,'MyClass::MyClass()=default'],['../classMyClass.html#a2479bed14c9f81b6499c215bb4bafbd4',1,'MyClass::MyClass(const MyClass &amp;)=default'],['../classMyClass.html#a90b6bb96fe2f3bed1a775f124f533792',1,'MyClass::MyClass(MyClass &amp;&amp;)=default'],['../classMyClass.html',1,'MyClass']]],
-  ['myclass_2ecpp_45',['MyClass.cpp',['../MyClass_8cpp.html',1,'']]],
-  ['myclass_2eh_46',['MyClass.h',['../MyClass_8h.html',1,'']]],
-  ['myclassmocktest_47',['MyClassMockTest',['../classMyClassMockTest.html',1,'']]],
-  ['myclassmocktest_2ecpp_48',['MyClassMockTest.cpp',['../MyClassMockTest_8cpp.html',1,'']]],
-  ['myclasstest_49',['MyClassTest',['../classMyClassTest.html',1,'']]],
-  ['myclasstest_2ecpp_50',['MyClassTest.cpp',['../MyClassTest_8cpp.html',1,'']]],
-  ['mymockclass_51',['myMockClass',['../classMyClassMockTest.html#a1fff1d3e77429dc74508e189b4f69e14',1,'MyClassMockTest']]]
+  ['teardown_33',['TearDown',['../classMyClassMockTest.html#a4818b7f1e44271e6d31a8f2b0dd3df0a',1,'MyClassMockTest::TearDown()'],['../classMyClassTest.html#a75ae23c5e8e19d12fa6019d9c06ead6a',1,'MyClassTest::TearDown()']]],
+  ['test_34',['TEST',['../ClangTidyWarningsTest_8cpp.html#ad0138c260736c93e0494cfc121cc458b',1,'TEST(ClangTidyWarningsTest, BadCode):&#160;ClangTidyWarningsTest.cpp'],['../CppStandard17_8cpp.html#afe1ca758dbdcef3255128be5f8db5ee3',1,'TEST(CppStandard17, FoldExpressions):&#160;CppStandard17.cpp'],['../CppStandard17_8cpp.html#a656f0bdfb0d4df5b1de929ee82c215ee',1,'TEST(CppStandard17, Memory):&#160;CppStandard17.cpp'],['../CppStandard20_8cpp.html#ac2aa864f0e61092ed63a7f676f3a5d26',1,'TEST(CppStandard20, LambdaImprovements):&#160;CppStandard20.cpp'],['../CppStandard20_8cpp.html#a783401de1e7eb3cab011d62fc49dd296',1,'TEST(CppStandard20, Concepts):&#160;CppStandard20.cpp']]],
+  ['test_5ff_35',['TEST_F',['../MyClassMockTest_8cpp.html#a57d8f094e810a64838e10050e0a6fdb1',1,'TEST_F(MyClassMockTest, Divide):&#160;MyClassMockTest.cpp'],['../MyClassMockTest_8cpp.html#adf1c448de0831bbd1ffcf2b78ee4a5c0',1,'TEST_F(MyClassMockTest, Add):&#160;MyClassMockTest.cpp'],['../MyClassMockTest_8cpp.html#a631f7feced316e2a7f221e455c35ef37',1,'TEST_F(MyClassMockTest, Subtract):&#160;MyClassMockTest.cpp'],['../MyClassTest_8cpp.html#a2d4d88f0fb2a3c8c6f8fd73201605828',1,'TEST_F(MyClassTest, Divide):&#160;MyClassTest.cpp'],['../MyClassTest_8cpp.html#a4ada15caffef2183c83f992cbe75c115',1,'TEST_F(MyClassTest, Add):&#160;MyClassTest.cpp'],['../MyClassTest_8cpp.html#a439bb4bba7b9807f31882e2569b3da7c',1,'TEST_F(MyClassTest, Subtract):&#160;MyClassTest.cpp']]]
 ];

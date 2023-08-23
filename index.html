@@ -89,94 +89,106 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="title">C++ Project Template </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a> <img src="https://img.shields.io/badge/C%2B%2B-11%2F14%2F17%2F20%2F23-blue" alt="C++" class="inline"/> <a href="https://onimuru.github.io/__Template/"><img src="https://svgshare.com/i/vaA.svg" alt="Documentation" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/Onimuru/__Template/actions/workflows/continuous-integration.yml"><img src="https://github.com/Onimuru/__Template/actions/workflows/continuous-integration.yml/badge.svg" alt="Continuous Integration" style="pointer-events: none;" class="inline"/></a> <a href="https://codecov.io/gh/Onimuru/__Template"><img src="https://codecov.io/gh/Onimuru/__Template/branch/main/graph/badge.svg?token=Z2CFXJ9IGL" alt="Codecov" style="pointer-events: none;" class="inline"/></a> <a href="./LICENSE"><img src="https://camo.githubusercontent.com/890acbdcb87868b382af9a4b1fac507b9659d9bf/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d4d49542d626c75652e737667" alt="License" class="inline"/></a></p>
+<div class="textblock"><p><a class="anchor" id="md_README"></a> <a href="https://github.com/Onimuru/__Template/actions/workflows/continuous-integration.yml"><img src="https://github.com/Onimuru/__Template/actions/workflows/continuous-integration.yml/badge.svg" alt="Continuous Integration" style="pointer-events: none;" class="inline"/></a> <a href="https://onimuru.github.io/__Template/"><img src="https://svgshare.com/i/vaA.svg" alt="Documentation" style="pointer-events: none;" class="inline"/></a> <a href="https://codecov.io/gh/Onimuru/__Template"><img src="https://codecov.io/gh/Onimuru/__Template/branch/main/graph/badge.svg?token=Z2CFXJ9IGL" alt="Codecov" style="pointer-events: none;" class="inline"/></a> <a href="./LICENSE"><img src="https://camo.githubusercontent.com/890acbdcb87868b382af9a4b1fac507b9659d9bf/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d4d49542d626c75652e737667" alt="License" class="inline"/></a></p>
 <p>This is a template for C++ projects. What you get:</p>
 <ul>
-<li>Library, executable and test code separated in distinct folders</li>
 <li>Use of modern CMake for building and compiling</li>
-<li>External libraries installed and managed by <a href="https://github.com/microsoft/vcpkg">Vcpkg</a> Package Manager</li>
-<li>Unit testing using <a href="https://github.com/google/googletest">Googletest</a></li>
-<li>General purpose libraries: <a href="https://github.com/nlohmann/json">JSON</a>, <a href="https://github.com/gabime/spdlog">spdlog</a>, <a href="https://github.com/jarro2783/cxxopts">cxxopts</a> and <a href="https://github.com/fmtlib/fmt">fmt</a></li>
-<li>Continuous integration testing with Github Actions and <a href="https://pre-commit.com/">pre-commit</a></li>
-<li>Code documentation with <a href="https://doxygen.nl/">Doxygen</a> and <a href="https://onimuru.github.io/__Template/">Github Pages</a></li>
-<li>Code analysis: <a href="https://sourceforge.net/p/cppcheck/wiki/Home/">Cppcheck</a></li>
+<li>External libraries installed and managed by <a href="https://github.com/microsoft/vcpkg">Vcpkg</a> Package Manager:<ul>
+<li><a href="https://github.com/nlohmann/json">JSON</a></li>
+<li><a href="https://github.com/gabime/spdlog">spdlog</a></li>
+<li><a href="https://github.com/jarro2783/cxxopts">cxxopts</a></li>
+<li><a href="https://github.com/fmtlib/fmt">fmt</a></li>
+</ul>
+</li>
+<li>Tooling: Automatically update submodules, <a href="https://ccache.dev/">CCache</a>, and Sanitizers</li>
+<li>Code analysis with <a href="https://sourceforge.net/p/cppcheck/wiki/Home/">Cppcheck</a>, <a href="https://clang.llvm.org/extra/clang-tidy/">Clang-Tidy</a>, and <a href="https://include-what-you-use.org/">Include what you use</a></li>
+<li>Unit testing with <a href="https://github.com/google/googletest">Googletest</a></li>
 <li>Code coverage reports, including automatic upload to <a href="https://codecov.io">Codecov</a></li>
-<li>Tooling: CCache, Clang-Format, CMake-Format, and Sanitizers</li>
+<li>Code documentation with <a href="https://doxygen.nl/">Doxygen</a> and <a href="https://onimuru.github.io/__Template/">Github Pages</a></li>
+<li>Continuous integration testing with Github Actions and <a href="https://pre-commit.com/">pre-commit</a></li>
 </ul>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Structure</h1>
 <div class="fragment"><div class="line">├── CMakeLists.txt</div>
 <div class="line">├── cmake</div>
-<div class="line">│   └── CMake modules</div>
+<div class="line">│   ├── CMake modules</div>
 <div class="line">│   └── ...</div>
-<div class="line">├── doc</div>
-<div class="line">│   ├── Doxyfile</div>
+<div class="line">├── docs</div>
 <div class="line">│   └── html/</div>
 <div class="line">├── external</div>
-<div class="line">│   ├── CMakesLists.txt</div>
+<div class="line">│   ├── vcpkg/</div>
+<div class="line">│   └── CMakesLists.txt</div>
 <div class="line">├── include</div>
 <div class="line">│   ├── pch.h</div>
 <div class="line">│   └── ...</div>
 <div class="line">├── lib</div>
 <div class="line">│   └── ...</div>
 <div class="line">├── src</div>
-<div class="line">│   └── Main.cpp</div>
+<div class="line">│   ├── Main.cpp</div>
 <div class="line">│   └── ...</div>
 <div class="line">└── test</div>
 <div class="line">    ├── CMakeLists.txt</div>
 <div class="line">    └── ...</div>
-</div><!-- fragment --><p>Headers go in <a href="include/">include/</a>, source code in <a href="src/">src/</a>, and unit tests go in <a href="test/">test/</a>.</p>
+</div><!-- fragment --><p>Headers go in <a href="include/">include/</a>, source code in <a href="src/">src/</a>, and unit tests go in <a href="test/">test/</a></p>
 <h1><a class="anchor" id="autotoc_md2"></a>
 Software Requirements</h1>
+<p><b>These can be <a href="tools/__Setup/">installed</a> with choco and pip on windows by running <a href="tools/__Setup/Install.bat">Install.bat</a> (choco and pip must be installed manually)</b></p>
 <ul>
-<li><a href="https://cmake.org/download/">CMake</a> v3.16+</li>
+<li><a href="https://cmake.org/download/">CMake</a> v3.21+</li>
 <li><a href="https://ftp.gnu.org/gnu/make/">GNU Makefile</a></li>
-<li><a href="https://conan.io/downloads.html">Conan</a> or <a href="https://vcpkg.io/en/getting-started">Vcpkg</a></li>
-<li>MSVC 2017 (or higher), G++9 (or higher), Clang++9 (or higher)</li>
-<li>(Optional) <a href="https://www.doxygen.nl/download.html">Doxygen</a> and <a href="https://graphviz.org/download/">Graphviz</a></li>
-<li>(Optional) <a href="https://cppcheck.sourceforge.io/">Cppcheck</a></li>
-<li>(Optional, <b>GNU or Clang only</b>) Code Coverage: <a href="https://pypi.org/project/lcov/">lcov</a> and <a href="https://gcovr.com/en/stable/installation.html">gcovr</a></li>
+<li>MSVC 2017 (or higher), G++9 (or higher), or Clang++9 (or higher)</li>
+<li><a href="https://vcpkg.io/en/getting-started">Vcpkg</a> (included as a <a href="external/vcpkg/">submodule</a>)</li>
+<li>(Optional) Tooling:<ul>
+<li><a href="https://ccache.dev/download.html">Ccache</a></li>
 </ul>
+</li>
+<li>(Optional) Static analyzers:<ul>
+<li><a href="https://cppcheck.sourceforge.io/">Cppcheck</a></li>
+<li><a href="https://releases.llvm.org/download.html">Clang-Tidy</a></li>
+<li><a href="https://include-what-you-use.org/downloads/">Include what you use</a> (this must be built manually, I think I successfully build it on windows with Clang)</li>
+</ul>
+</li>
+<li>(Optional*, <b>Clang compiler only</b>) Code Coverage: <a href="https://llvm.org/docs/CommandGuide/llvm-profdata.html">llvm-profdata</a> and <a href="https://llvm.org/docs/CommandGuide/llvm-cov.html">llvm-cov</a> (download with <a href="https://releases.llvm.org/download.html">LLVM</a>)</li>
+<li>(Optional*) Documentation: <a href="https://www.doxygen.nl/download.html">Doxygen</a> and <a href="https://graphviz.org/download/">Graphviz</a></li>
+</ul>
+<p>*It is not necessary to install the software for Code Coverage and Documentation locally as they can be built and automatically deployed by workflows</p>
 <h1><a class="anchor" id="autotoc_md3"></a>
 Additional setup</h1>
 <h2><a class="anchor" id="autotoc_md4"></a>
 GitHub</h2>
 <ul>
-<li>Give your workflows write permission in Settings/Actions/General/Workflow permissions</li>
+<li>Allow <a href=".github/workflows/template-janitor.yml">template janitor</a> workflow to complete, this will rename various placeholders in the CMake files to your new project name and also delete some files that you don't need</li>
+<li>Give your workflows write permission in Settings/Actions/General/Workflow permissions (<a href=".github/workflows/documentation.yml">documentation</a> will fail to deploy to <a href="https://github.com/Onimuru/__Template/tree/gh-pages">gh-pages</a> unless this is done)</li>
 <li>Setup <a href="https://docs.github.com/en/pages/quickstart">GitHub Pages</a></li>
 </ul>
 <h2><a class="anchor" id="autotoc_md5"></a>
 Local Machine</h2>
 <ul>
-<li>(Optional) Automate unit tests with <a href="https://www.redhat.com/sysadmin/git-hooks">git hooks</a></li>
+<li>Ensure all software is in your <code>PATH</code> environment variable (relaunch VSCode or cmd for the changes to be recognised)</li>
+<li>(Optional) If you're using the Clang compiler, add a variable called <code>EXTERNAL_INCLUDE</code> to your environment variables (system or user) and give it the paths to the various windows headers provided by Visual Studio. The reason the variable is called <code>EXTERNAL_INCLUDE</code> is because github workflows use this variable too. For instance the headers currently needed by this project: <div class="fragment"><div class="line">C:\Program Files\Microsoft Visual Studio\2022\Preview\VC\Tools\MSVC\14.38.32919\include</div>
+<div class="line">C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um</div>
+<div class="line">C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared</div>
+<div class="line">C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\ucrt</div>
+<div class="line">C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\winrt</div>
+</div><!-- fragment --></li>
+<li>Modify <code>"generator"</code> in <a href="CMakeUserPresets.json#L11">CMakeUserPresets.json</a> to the generator you wish to use although this project is geared towards Ninja or Ninja-Multi-Config generators</li>
+<li>Modify <code>CMAKE_C_COMPILER</code> and <code>CMAKE_CXX_COMPILER</code> in <a href="CMakeUserPresets.json#L23">CMakeUserPresets.json</a> to the compiler you wish to use</li>
+<li>(Optional) Automate unit tests with <a href="https://www.redhat.com/sysadmin/git-hooks">git hooks</a> (for example: <a href="tools/__Setup/pre-commit">pre-commit</a>)</li>
 <li>(Optional) Install the various <a href="https://pre-commit.com/hooks.html">hooks</a> listed in <a href=".pre-commit-config.yaml">.pre-commit-config.yaml</a> for use with pre-commit or delete the file if you don't intend to use it. Pre-commit can be automated with git hooks like ctest above</li>
-<li>(Optional) Setup <a href="https://ccache.dev/">Ccache</a> to speed up subsequent compilations. It is already built into the project but only runs if the program can be found</li>
-<li>(Optional, <b>Windows only</b>) If you have multiple projects, consider using <a href="https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/">symlinks</a> to use the same formatting settings (<a href=".clang-format">.clang-format</a>, <a href=".clang-tidy">.clang-tidy</a>, etc..) for all your projects with a single file. There is a <a href="Tools/Symlink.bat">batch</a> file that will perform this process automatically but you will need to change the source directory. <a href="https://stackoverflow.com/a/52517718">The first two lines</a> are to run with admin privileges</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md6"></a>
 Building</h1>
 <p>First, clone this repo:</p>
-<div class="fragment"><div class="line">git clone --recursive https://github.com/Onimuru/__Template</div>
-</div><!-- fragment --><ul>
-<li>Documentation</li>
-</ul>
-<div class="fragment"><div class="line">cd build</div>
-<div class="line">cmake -DCMAKE_BUILD_TYPE=Debug ..</div>
-<div class="line">cmake --build . --config Debug --target doxygen</div>
-</div><!-- fragment --><ul>
-<li>Code Analysis</li>
-</ul>
-<div class="fragment"><div class="line">cd build</div>
-<div class="line">cmake -DCMAKE_BUILD_TYPE=Debug ..</div>
-<div class="line">cmake --build . --config Debug --target cppcheck</div>
-</div><!-- fragment --><ul>
+<div class="fragment"><div class="line">git clone --recursive https://github.com/&lt;your github username&gt;/&lt;your repository name&gt;</div>
+</div><!-- fragment --><p>Now ideally use VSCode with <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools">CMake Tools</a> which will read from <a href="CMakeUserPresets.json">CMakeUserPresets.json</a> and give you a nice toolbar on the bottom of the VSCode window to switch between configurations. Alternatively you can build the project manually on the command line:</p>
+<ul>
 <li>Executable</li>
 </ul>
 <div class="fragment"><div class="line">cd build</div>
-<div class="line">cmake -DCMAKE_BUILD_TYPE=Release ..</div>
+<div class="line">cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_EXECUTABLE=ON ..</div>
 <div class="line">cmake --build . --config Release</div>
-<div class="line">cd bin/Release</div>
-<div class="line">./&lt;your project name&gt;</div>
+<div class="line">cd bin</div>
+<div class="line">./&lt;your project name&gt;.exe</div>
 </div><!-- fragment --><ul>
 <li>Unit testing</li>
 </ul>
@@ -185,11 +197,17 @@ Building</h1>
 <div class="line">cmake --build . --config Debug --target unit_tests</div>
 <div class="line">ctest -C Debug -VV</div>
 </div><!-- fragment --><ul>
-<li>Code Coverage (Unix only)</li>
+<li>Code Coverage (<b>Clang compiler only</b>)</li>
 </ul>
 <div class="fragment"><div class="line">cd build</div>
 <div class="line">cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_CODE_COVERAGE=ON ..</div>
-<div class="line">cmake --build . --config Debug --target coverage</div>
+<div class="line">cmake --build . --config Debug --target unit_tests</div>
+</div><!-- fragment --><ul>
+<li>Documentation</li>
+</ul>
+<div class="fragment"><div class="line">cd build</div>
+<div class="line">cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_DOXYGEN=ON ..</div>
+<div class="line">cmake --build . --config Debug --target doxygen</div>
 </div><!-- fragment --><p>For more info about CMake see <a class="el" href="md_README_cmake.html">here</a>. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->

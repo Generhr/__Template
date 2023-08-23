@@ -53,24 +53,6 @@ var NAVTREE =
         [ "Static", "md_README_cmake.html#autotoc_md22", null ]
       ] ]
     ] ],
-    [ "Software Installation", "md_README_install.html", [
-      [ "How to install VCPKG", "md_README_install.html#autotoc_md24", null ],
-      [ "How to install the Conan Package Manager", "md_README_install.html#autotoc_md25", [
-        [ "Installation Steps", "md_README_install.html#autotoc_md26", null ]
-      ] ],
-      [ "Formatter and Static Analyzer", "md_README_install.html#autotoc_md27", [
-        [ "Tooling", "md_README_install.html#autotoc_md28", null ],
-        [ "Install Clang Tools", "md_README_install.html#autotoc_md29", null ]
-      ] ]
-    ] ],
-    [ "Namespaces", "namespaces.html", [
-      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
-      [ "Namespace Members", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", null ],
-        [ "Functions", "namespacemembers_func.html", null ],
-        [ "Variables", "namespacemembers_vars.html", null ]
-      ] ]
-    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -86,6 +68,7 @@ var NAVTREE =
       [ "File Members", "globals.html", [
         [ "All", "globals.html", null ],
         [ "Functions", "globals_func.html", null ],
+        [ "Variables", "globals_vars.html", null ],
         [ "Typedefs", "globals_type.html", null ]
       ] ]
     ] ]

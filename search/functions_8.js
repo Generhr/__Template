@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['longlineexceedinglimit_142',['LongLineExceedingLimit',['../classClangTidyWarnings.html#ac7e14c851afe6b55a7c116b43e82c925',1,'ClangTidyWarnings']]]
+  ['_7emyclass_69',['~MyClass',['../classMyClass.html#aff1f68ca51899b007b1733c381de9774',1,'MyClass']]]
 ];

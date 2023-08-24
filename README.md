@@ -50,7 +50,7 @@ Headers go in [include/](include/), source code in [src/](src/), and unit tests 
 
 ## Software Requirements
 
-**These can be [installed](tools/__Setup/) with choco and pip on windows by running [Install.bat](tools/__Setup/Install.bat) (choco and pip must be installed manually)**
+**These can be installed with [choco](packages.config) and [pip](requirements.txt) on windows by running [Install.bat](tools/Install.bat) (choco and pip must be installed manually)**
 
 - [CMake](https://cmake.org/download/) v3.21+
 - [GNU Makefile](https://ftp.gnu.org/gnu/make/)
@@ -88,7 +88,7 @@ C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\winrt
 ```
 - Modify `"generator"` in [CMakeUserPresets.json](CMakeUserPresets.json#L11) to the generator you wish to use although this project is geared towards Ninja or Ninja-Multi-Config generators
 - Modify `CMAKE_C_COMPILER` and `CMAKE_CXX_COMPILER` in [CMakeUserPresets.json](CMakeUserPresets.json#L23) to the compiler you wish to use
-- (Optional) Automate unit tests with [git hooks](https://www.redhat.com/sysadmin/git-hooks) (for example: [pre-commit](tools/__Setup/pre-commit))
+- (Optional) Automate unit tests with [git hooks](https://www.redhat.com/sysadmin/git-hooks) (for example: [pre-commit](tools/pre-commit))
 - (Optional) Install the various [hooks](https://pre-commit.com/hooks.html) listed in [.pre-commit-config.yaml](.pre-commit-config.yaml) for use with pre-commit or delete the file if you don't intend to use it. Pre-commit can be automated with git hooks like ctest above
 
 ## Building

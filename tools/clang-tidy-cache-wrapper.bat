@@ -9,10 +9,6 @@ if not defined CTCACHE_CLANG_TIDY (
 :: Define the path to ctcache-clang-tidy
 set "CTCACHE_CLANG_CACHE=%~dp0..\external\ctcache\clang-tidy-cache"
 
-if exist "!CTCACHE_CLANG_CACHE!" (
-    python !CTCACHE_CLANG_CACHE! !CTCACHE_CLANG_TIDY! %*
-) else (
-    echo does not exist
-)
+python !CTCACHE_CLANG_CACHE! !CTCACHE_CLANG_TIDY! %*
 
 endlocal

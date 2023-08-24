@@ -25,7 +25,7 @@
                 "CMAKE_CXX_VISIBILITY_PRESET": "hidden",
                 "CMAKE_VISIBILITY_INLINES_HIDDEN": "yes",
                 "VERBOSE_OUTPUT": "OFF",
-                "ENABLE_CPPCHECK": "ON",
+                "ENABLE_CPPCHECK": "OFF",
                 "ENABLE_CLANG_TIDY": "ON",
                 "ENABLE_INCLUDE_WHAT_YOU_USE": "OFF",
                 "ENABLE_SANITIZE_ADDR": "OFF",
@@ -94,7 +94,7 @@
             "displayName": "Build (Debug)",
             "configuration": "Debug",
             "configurePreset": "user-configure-debug",
-            "cleanFirst": false,
+            "cleanFirst": true,
             "jobs": 12
         },
         {

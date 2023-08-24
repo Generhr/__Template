@@ -156,9 +156,9 @@ macro(enable_clang_tidy)
 
             find_all_directories_with_clang_tidy(DIRECTORIES_WITH_CLANG_TIDY)
 
-            # if(DIRECTORIES_WITH_CLANG_TIDY)
-            #     list(APPEND CLANG_TIDY_COMMAND --directories_with_clang_tidy=${DIRECTORIES_WITH_CLANG_TIDY})
-            # endif()
+            if(DIRECTORIES_WITH_CLANG_TIDY)
+                list(APPEND CLANG_TIDY_COMMAND --directories_with_clang_tidy=${DIRECTORIES_WITH_CLANG_TIDY})
+            endif()
         else()
             #~ https://clang.llvm.org/extra/clang-tidy/
             set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-p=${CMAKE_BINARY_DIR}" "${CLANG_TIDY_EXTRA_ARGS}")

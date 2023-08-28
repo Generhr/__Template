@@ -1,11 +1,20 @@
-#pragma once
+/* config.h for CMake builds */
+
+#ifndef ${PROJECT_NAME_TOUPPER}_CONFIG_H
+#define ${PROJECT_NAME_TOUPPER}_CONFIG_H
 
 #include <cstdint>
 #include <string_view>
 
-static constexpr std::string_view project_name = "@PROJECT_NAME@";
-static constexpr std::string_view project_version = "@PROJECT_VERSION@";
-static constexpr std::int32_t project_version_major{ @PROJECT_VERSION_MAJOR@ };
-static constexpr std::int32_t project_version_minor{ @PROJECT_VERSION_MINOR@ };
-static constexpr std::int32_t project_version_patch{ @PROJECT_VERSION_PATCH@ };
-static constexpr std::string_view git_sha = "@GIT_SHA@";
+namespace ${PROJECT_NAME}::CMake {
+    inline constexpr std::string_view project_name = "@PROJECT_NAME@";
+    inline constexpr std::string_view project_version = "@PROJECT_VERSION@";
+    inline constexpr int project_version_major { @PROJECT_VERSION_MAJOR@ };
+    inline constexpr int project_version_minor { @PROJECT_VERSION_MINOR@ };
+    inline constexpr int project_version_patch { @PROJECT_VERSION_PATCH@ };
+    inline constexpr std::string_view git_sha = "@GIT_SHA@";
+}  // namespace ${PROJECT_NAME}::CMake
+
+#endif /* ${PROJECT_NAME_TOUPPER}_CONFIG_H */
+
+/* end config.h for CMake builds */

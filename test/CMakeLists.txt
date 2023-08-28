@@ -6,11 +6,7 @@ project(${CMAKE_PROJECT_NAME}Tests LANGUAGES CXX C)
 
 #==========  CMake Variables  ==================================================#
 
-if(CMAKE_GENERATOR MATCHES "Ninja Multi")
-    set(CURRENT_BINARY_DIR "${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
-elseif(CMAKE_GENERATOR MATCHES "Ninja")
-    set(CURRENT_BINARY_DIR "${PROJECT_BINARY_DIR}")
-endif()
+set(CURRENT_BINARY_DIR "${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
 
 #========== Add Unit Test(s) ==================================================#
 
@@ -28,7 +24,7 @@ foreach(TEST_FILE ${TEST_FILES})
         PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD}
                    CXX_STANDARD_REQUIRED 17
                    CXX_EXTENSIONS NO
-                   RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
+                   RUNTIME_OUTPUT_DIRECTORY ${CURRENT_BINARY_DIR}
                    EXCLUDE_FROM_ALL TRUE
                    EXCLUDE_FROM_DEFAULT_BUILD TRUE
     )

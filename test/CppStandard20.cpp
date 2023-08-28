@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 TEST(CppStandard20, LambdaImprovements) {
-    int x = 42;
+    const int x = 42;
     auto lambda = [x = std::move(x)]() mutable {
         x++;
         return x;

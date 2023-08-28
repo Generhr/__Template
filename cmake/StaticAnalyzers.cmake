@@ -11,9 +11,6 @@ macro(enable_cppcheck)
         endif()
 
         if(NOT CPPCHECK_OPTIONS)
-            # Set export commands on for use with `--project`
-            set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
             foreach(FILE_PATH ${SKIP_LINTING_LIST})
                 get_filename_component(FILE_NAME ${FILE_PATH} NAME)
 
@@ -93,9 +90,6 @@ macro(enable_clang_tidy)
         endfunction()
 
         find_clang_tidy_version(CLANG_TIDY_VERSION)
-
-        # Export compile commands on for use with `-p`
-        set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # NOTE: This command only works with Ninja or Makefile generators.
 
         if(MSVC)
             list(APPEND CLANG_TIDY_EXTRA_ARGS --extra-arg=/std:c++${CMAKE_CXX_STANDARD} --extra-arg=/EHsc # Specify the exception handling model to allow for `try, catch, throw, ...`

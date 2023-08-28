@@ -257,7 +257,7 @@
                 }
             ]
         },
-        "((#|\/\/)\\*\\s.*?)(?:\\s(#|\/\/)\\S?\\s|$)": { //* text ** special text ** text // other text
+        "(((#|\/\/)\\s*?(\\*|NOTE:)).*?)(?:\\s(#|\/\/)\\S?\\s|$)": { //* text ** special text ** text // other text
             "decorations": [
                 {
                     "color": "#B59E1B",

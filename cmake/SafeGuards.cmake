@@ -5,8 +5,9 @@ if(EXISTS "${LOC_PATH}")
     message(FATAL_ERROR "You cannot build in a source directory (or any directory with a CMakeLists.txt file). Please make a build subdirectory. Feel free to remove CMakeCache.txt and CMakeFiles.")
 endif()
 
-if(NOT CMAKE_BUILD_TYPE) # Default build type if none is set.
-    set(DEFAULT_BUILD_TYPE "Debug")
+# Default build type if none is set.
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(DEFAULT_BUILD_TYPE "RelWithDebInfo")
 
     message(STATUS "Setting build type to '${DEFAULT_BUILD_TYPE}' as none was specified.")
 

@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 3.27...3.27 FATAL_ERROR) #? 3.27 - SKIP_LINTING
 #==========  Project Details  ==================================================#
 
 project("__Name"
-        VERSION "0.1.0" # NOTE: Listing the version is nice here since it sets lots of useful variables.
+        VERSION "0.1.0" # NOTE: Listing the version is nice here since it sets lots of useful variables
         DESCRIPTION "__Description"
         HOMEPAGE_URL "__Url"
-        LANGUAGES CXX C # NOTE: To support external libraries, it's good practice to list both CXX and C.
+        LANGUAGES CXX C # NOTE: To support external libraries, it's good practice to list both CXX and C
 )
 
 #============  Safe Guards  ====================================================#
@@ -18,24 +18,27 @@ variable_watch(CMAKE_BUILD_TYPE readonly_guard)
 
 message(STATUS "\n-- Configuring CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n--")
 
-# Only do these if this is the main project, and not if it is included through add_subdirectory:
+# Only do these if this is the main project, and not if it is included through add_subdirectory
 if(PROJECT_IS_TOP_LEVEL)
     if(NOT DEFINED CMAKE_CXX_STANDARD)
-        set(CMAKE_CXX_STANDARD # NOTE: GoogleTest requires at least C++14.
+        set(CMAKE_CXX_STANDARD # NOTE: GoogleTest requires at least C++14
             20
             CACHE STRING "The C++ standard to use."
         )
     endif()
 
-    # Require C++17 features like if constexpr:
+    # Require C++17 features like if constexpr
     set(CMAKE_CXX_STANDARD_REQUIRED 17)
 
-    set(CMAKE_CXX_EXTENSIONS OFF) # NOTE: While this is generally a good practice, you should ensure that this setting doesn't cause any issues with third-party libraries or the project's requirements.
+    set(CMAKE_CXX_EXTENSIONS OFF) # NOTE: While this is generally a good practice, you should ensure that this setting doesn't cause any issues with third-party libraries or the project's requirements
     set(CMAKE_C_EXTENSIONS OFF)
 endif()
 
-# Suppress generation of the ZERO_CHECK build target:
-set(CMAKE_SUPPRESS_REGENERATION true)
+# Suppress generation of the ZERO_CHECK build target
+set(CMAKE_SUPPRESS_REGENERATION ON)
+
+# Generate compile_commands.json to make it easier to work with clang based tools
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # NOTE: This command only works with Ninja or Makefile generators
 
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
@@ -46,6 +49,9 @@ ProcessorCount(PROCESSOR_COUNT)
 if(PROCESSOR_COUNT EQUAL 0)
     set(PROCESSOR_COUNT 1)
 endif()
+
+string(TOLOWER "${PROJECT_NAME}" PROJECT_NAME_TOLOWER)
+string(TOUPPER "${PROJECT_NAME}" PROJECT_NAME_TOUPPER)
 
 set(GIT_SHA
     "Unknown"
@@ -126,41 +132,56 @@ include(${CMAKE_SOURCE_DIR}/external/vcpkg/scripts/buildsystems/vcpkg.cmake)
 
 #=========  Compiler/OS Fixes  =================================================#
 
-if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc") # Microsoft’s compiler is super old and they care a lot about backwards compatibility so this needs to be added manually
-endif(MSVC)
+# Enhance error reporting and compiler messages
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+    if(WIN32)
+        # On Windows cuda nvcc uses cl and not clang
+        add_compile_options($<$<COMPILE_LANGUAGE:C>:-fcolor-diagnostics> $<$<COMPILE_LANGUAGE:CXX>:-fcolor-diagnostics>)
+    else()
+        add_compile_options(-fcolor-diagnostics)
+    endif()
 
-if("${CMAKE_CXX_COMPILER_ID}" MATCHES "[Cc]lang")
     set(WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST "$ENV{EXTERNAL_INCLUDE}")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    if(WIN32)
+        # On Windows cuda nvcc uses cl and not gcc
+        add_compile_options($<$<COMPILE_LANGUAGE:C>:-fdiagnostics-color=always> $<$<COMPILE_LANGUAGE:CXX>:-fdiagnostics-color=always>)
+    else()
+        add_compile_options(-fdiagnostics-color=always)
+    endif()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    if(MSVC_VERSION GREATER 1900)
+        add_compile_options(/diagnostics:column)
+    endif()
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc") # Microsoft’s compiler is super old and they care a lot about backwards compatibility so this needs to be added manually
+else()
+    message(STATUS "No colored compiler diagnostic set for '${CMAKE_CXX_COMPILER_ID}' compiler.")
 endif()
 
-if(UNIX)
-    add_compile_options("$<$<CONFIG:DEBUG>:-D_DEBUG>") # This will allow the use of the same _DEBUG macro available in both Linux and Windows environment. Easy to put Debug specific code
-endif()
+#==========  Configure Files  ==================================================#
+
+configure_file("configure/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/configured_files/include/config.h" ESCAPE_QUOTES)
 
 #========== Add Source Files ==================================================#
 
 add_subdirectory(external EXCLUDE_FROM_ALL)
 
-foreach(SOURCE_FILE IN LISTS SKIP_LINTING_LIST)
-    set_source_files_properties(${SOURCE_FILE} PROPERTIES SKIP_LINTING ON)
-endforeach()
-
 # NOTE: globbing sources is considered bad practice as CMake's generators may not detect new files automatically. Keep that in mind when changing files, or explicitly mention them in the relevant `MANUAL_*_LIST` variables
 
 file(GLOB_RECURSE HEADER_LIST include/*)
-list(REMOVE_ITEM HEADER_LIST ${PRECOMPILED_HEADER_LIST})
 list(APPEND HEADER_LIST ${MANUAL_HEADER_LIST})
 list(REMOVE_DUPLICATES HEADER_LIST)
+list(REMOVE_ITEM HEADER_LIST ${PRECOMPILED_HEADER_LIST})
 
 file(GLOB_RECURSE SOURCE_LIST src/*.cpp)
-list(REMOVE_ITEM SOURCE_LIST "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp")
 list(APPEND SOURCE_LIST ${MANUAL_SOURCE_LIST})
 list(REMOVE_DUPLICATES SOURCE_LIST)
+list(REMOVE_ITEM SOURCE_LIST "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp")
 
-#==========  Configure Files  ==================================================#
-
-add_subdirectory(configure)
+foreach(SOURCE_FILE IN LISTS SKIP_LINTING_LIST)
+    set_source_files_properties(${SOURCE_FILE} PROPERTIES SKIP_LINTING ON)
+endforeach()
 
 #===========  Create Target  ===================================================#
 
@@ -181,7 +202,7 @@ if(BUILD_HEADERS_ONLY)
         message(STATUS "Created ${PROJECT_NAME} interface library")
     endif()
 elseif(BUILD_EXECUTABLE)
-    add_executable(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp" "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
+    add_executable(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp" "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required
 
     if(VERBOSE_OUTPUT)
         message(STATUS "Created ${PROJECT_NAME} binary with the following sources:")
@@ -215,12 +236,22 @@ endif()
 
 if(BUILD_HEADERS_ONLY)
     target_include_directories(${PROJECT_NAME} INTERFACE "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+
+    # Precompile headers
+    if(NOT ENABLE_CLANG_TIDY OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+        target_precompile_headers(${PROJECT_NAME} INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
+    endif()
 else()
     target_include_directories(
         ${PROJECT_NAME}
         PUBLIC "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
-        PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include"
+        PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/configured_files/include"
     )
+
+    # Precompile headers
+    if(NOT ENABLE_CLANG_TIDY OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+        target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
+    endif()
 endif()
 
 #=====  Set Standard and Warnings  =============================================#
@@ -230,9 +261,9 @@ set_target_properties(
     PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD}
                CXX_STANDARD_REQUIRED 17
                CXX_EXTENSIONS NO
-               RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-               LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-               ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+               RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+               LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+               ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
 )
 
 message(STATUS "* using standard C++${CMAKE_CXX_STANDARD}")
@@ -243,15 +274,9 @@ endif()
 
 #========  Compile Definitions  ================================================#
 
-string(TOUPPER "${PROJECT_NAME}_DEBUG" PROJECT_DEBUG_DEFINE)
-target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_DEBUG_DEFINE})
+target_compile_definitions(${PROJECT_NAME} PRIVATE "$<$<CONFIG:DEBUG>:-D${PROJECT_NAME_TOUPPER}_DEBUG>")
 
 #=========  Link Dependencies  =================================================#
-
-# Precompile headers
-if(NOT ENABLE_CLANG_TIDY OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-    target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
-endif()
 
 # Link libraries
 find_package(cxxopts CONFIG REQUIRED)
@@ -269,11 +294,20 @@ else()
     add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 endif()
 
+#==============  Install  ======================================================#
+
+include(GNUInstallDirs)
+
+# Determine the installation directory for headers and libraries (the CMAKE_INSTALL_* variables are defined by the GNUInstallDirs module)
+set(INSTALL_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-${PROJECT_VERSION}")
+set(INSTALL_BIN_DIR "${CMAKE_INSTALL_BINDIR}")
+set(INSTALL_LIB_DIR "${CMAKE_INSTALL_LIBDIR}")
+
 #========= Unit Testing Setup =================================================#
 
 if(PROJECT_IS_TOP_LEVEL)
     if(ENABLE_TESTING)
-        include(CTest) # NOTE: Replace this with `enable_testing()` if you get annoyed with all the build targets that `CTest` adds.
+        include(CTest) # NOTE: Replace this with `enable_testing()` if you get annoyed with all the build targets that CTest adds
 
         add_library(TESTING_LIBRARY INTERFACE)
 
@@ -282,9 +316,12 @@ if(PROJECT_IS_TOP_LEVEL)
             append_coverage_compiler_flags_to_target(TESTING_LIBRARY)
         endif()
 
-        target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required.
-
+        target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required
         target_include_directories(TESTING_LIBRARY INTERFACE "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+        if(NOT ENABLE_CLANG_TIDY OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+            target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
+        endif()
 
         set_target_properties(
             TESTING_LIBRARY
@@ -293,12 +330,7 @@ if(PROJECT_IS_TOP_LEVEL)
                        CXX_EXTENSIONS NO
         )
 
-        string(TOUPPER "${PROJECT_NAME}_TEST" PROJECT_TEST_DEFINE)
-        target_compile_definitions(TESTING_LIBRARY INTERFACE ${PROJECT_TEST_DEFINE})
-
-        if(NOT ENABLE_CLANG_TIDY OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-            target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
-        endif()
+        target_compile_definitions(TESTING_LIBRARY INTERFACE "${PROJECT_NAME_TOUPPER}_TEST")
 
         find_package(GTest CONFIG REQUIRED)
         include(GoogleTest)
@@ -325,12 +357,3 @@ if(ENABLE_DOXYGEN)
     include(cmake/Doxygen.cmake)
     enable_doxygen()
 endif()
-
-#==============  Install  ======================================================#
-
-include(GNUInstallDirs)
-
-# Determine the installation directory for headers and libraries (the CMAKE_INSTALL_* variables are defined by the GNUInstallDirs module):
-set(INSTALL_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-${PROJECT_VERSION}")
-set(INSTALL_BIN_DIR "${CMAKE_INSTALL_BINDIR}")
-set(INSTALL_LIB_DIR "${CMAKE_INSTALL_LIBDIR}")

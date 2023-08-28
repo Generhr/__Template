@@ -49,6 +49,7 @@ jobs:
         run: |
           # Replace placeholders in CMakeLists.txt and source files with values pulled from the new repository:
           find include src test cmake -type f -exec sed -i "s|__Name|${{ env.SAFE_REPOSITORY_NAME }}|g" CMakeLists.txt {} +
+          find include src test -type f -exec sed -i "s|__NAME|$(echo ${{ env.SAFE_REPOSITORY_NAME }} | tr '[:lower:]' '[:upper:]')|g" {} +
           sed -i "s|__Description|${{ fromJson(steps.get_repo_meta.outputs.data).description }}|g" CMakeLists.txt
           sed -i "s|__Url|${{ fromJson(steps.get_repo_meta.outputs.data).html_url }}|g" CMakeLists.txt
 

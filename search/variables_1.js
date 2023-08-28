@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['myclass_71',['myClass',['../classMyClassTest.html#a8de96626bf3afceccab898c516847ff3',1,'MyClassTest']]],
-  ['mymockclass_72',['myMockClass',['../classMyClassMockTest.html#a1fff1d3e77429dc74508e189b4f69e14',1,'MyClassMockTest']]]
+  ['integral_81',['Integral',['../CppStandard20_8cpp.html#a7a0fa3d94322507e3510e387cacd7497',1,'CppStandard20.cpp']]]
 ];

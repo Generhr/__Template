@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['_7emyclass_36',['~MyClass',['../classMyClass.html#aff1f68ca51899b007b1733c381de9774',1,'MyClass']]]
+  ['setup_39',['SetUp',['../classMyClassMockTest.html#a9369bca309fa0cfe5997dc5afbcd89e7',1,'MyClassMockTest::SetUp()'],['../classMyClassTest.html#af07fafcc08cf2cd91d131bf17c7c12ac',1,'MyClassTest::SetUp()']]],
+  ['subtract_40',['Subtract',['../classMyClass.html#a8d7aba8fc4d27b40b0aadc3b06f6d451',1,'MyClass']]]
 ];

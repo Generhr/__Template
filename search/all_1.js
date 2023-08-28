@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['badcode_1',['BadCode',['../classClangTidyWarnings.html#a296cf934d5056b776776e13a97addddb',1,'ClangTidyWarnings']]]
+  ['add_2',['Add',['../classMyClass.html#a184d39dd6cacec09acd5777e95920df2',1,'MyClass']]]
 ];

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['readme_2emd_29',['README.md',['../README_8md.html',1,'']]],
-  ['readme_5fcmake_2emd_30',['README_cmake.md',['../README__cmake_8md.html',1,'']]]
+  ['operator_3d_30',['operator=',['../classMyClass.html#a7e8c7abd1f9db0241a322c69f075f991',1,'MyClass::operator=(const MyClass &amp;)=default'],['../classMyClass.html#ad50295c3bca21c3509c28a0c63f98ac4',1,'MyClass::operator=(MyClass &amp;&amp;)=default']]]
 ];

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['add_0',['Add',['../classMyClass.html#a184d39dd6cacec09acd5777e95920df2',1,'MyClass']]]
+  ['_5f_5fname_0',['__Name',['../namespace____Name.html',1,'']]],
+  ['cmake_1',['CMake',['../namespace____Name_1_1CMake.html',1,'__Name']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7emyclass_69',['~MyClass',['../classMyClass.html#aff1f68ca51899b007b1733c381de9774',1,'MyClass']]]
+  ['_7emyclass_79',['~MyClass',['../classMyClass.html#aff1f68ca51899b007b1733c381de9774',1,'MyClass']]]
 ];

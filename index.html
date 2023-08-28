@@ -132,7 +132,7 @@ Structure</h1>
 </div><!-- fragment --><p>Headers go in <a href="include/">include/</a>, source code in <a href="src/">src/</a>, and unit tests go in <a href="test/">test/</a></p>
 <h1><a class="anchor" id="autotoc_md2"></a>
 Software Requirements</h1>
-<p><b>These can be <a href="tools/__Setup/">installed</a> with choco and pip on windows by running <a href="tools/__Setup/Install.bat">Install.bat</a> (choco and pip must be installed manually)</b></p>
+<p><b>These can be installed with <a href="packages.config">choco</a> and <a href="requirements.txt">pip</a> on windows by running <a href="tools/Install.bat">Install.bat</a> (choco and pip must be installed manually)</b></p>
 <ul>
 <li><a href="https://cmake.org/download/">CMake</a> v3.21+</li>
 <li><a href="https://ftp.gnu.org/gnu/make/">GNU Makefile</a></li>
@@ -173,7 +173,7 @@ Local Machine</h2>
 </div><!-- fragment --></li>
 <li>Modify <code>"generator"</code> in <a href="CMakeUserPresets.json#L11">CMakeUserPresets.json</a> to the generator you wish to use although this project is geared towards Ninja or Ninja-Multi-Config generators</li>
 <li>Modify <code>CMAKE_C_COMPILER</code> and <code>CMAKE_CXX_COMPILER</code> in <a href="CMakeUserPresets.json#L23">CMakeUserPresets.json</a> to the compiler you wish to use</li>
-<li>(Optional) Automate unit tests with <a href="https://www.redhat.com/sysadmin/git-hooks">git hooks</a> (for example: <a href="tools/__Setup/pre-commit">pre-commit</a>)</li>
+<li>(Optional) Automate unit tests with <a href="https://www.redhat.com/sysadmin/git-hooks">git hooks</a> (for example: <a href="tools/pre-commit">pre-commit</a>)</li>
 <li>(Optional) Install the various <a href="https://pre-commit.com/hooks.html">hooks</a> listed in <a href=".pre-commit-config.yaml">.pre-commit-config.yaml</a> for use with pre-commit or delete the file if you don't intend to use it. Pre-commit can be automated with git hooks like ctest above</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md6"></a>

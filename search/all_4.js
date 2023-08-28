@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['integral_12',['Integral',['../CppStandard20_8cpp.html#a7a0fa3d94322507e3510e387cacd7497',1,'CppStandard20.cpp']]]
+  ['divide_13',['Divide',['../classMyClass.html#aea6586001c923cd932dec7513edef6da',1,'MyClass']]]
 ];

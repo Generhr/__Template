@@ -16,7 +16,19 @@ variable_watch(CMAKE_BUILD_TYPE readonly_guard)
 
 #==========  CMake Variables  ==================================================#
 
-message(STATUS "\n-- Configuring CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n--")
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang*") #~ CMAKE_<LANG>_COMPILER_ID: https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html
+    if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC") # NOTE: `CMAKE_CXX_COMPILER_FRONTEND_VARIANT` requires CMake v3.14+
+        set(CMAKE_COMPILER_IN_USE "Clang-cl")
+    elseif(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "GNU")
+        set(CMAKE_COMPILER_IN_USE "Clang")
+    endif()
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    set(CMAKE_COMPILER_IN_USE "GNU")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    set(CMAKE_COMPILER_IN_USE "MSVC")
+endif()
+
+message(STATUS "\n-- Configuring CMake for ${PROJECT_NAME} v${PROJECT_VERSION}\n-- with ${CMAKE_COMPILER_IN_USE} compiler\n")
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(PROJECT_IS_TOP_LEVEL)
@@ -27,7 +39,7 @@ if(PROJECT_IS_TOP_LEVEL)
         )
     endif()
 
-    # Require C++17 features like if constexpr
+    # LLVM Requires C++ 17 or higher
     set(CMAKE_CXX_STANDARD_REQUIRED 17)
 
     set(CMAKE_CXX_EXTENSIONS OFF) # NOTE: While this is generally a good practice, you should ensure that this setting doesn't cause any issues with third-party libraries or the project's requirements
@@ -133,7 +145,7 @@ include(${CMAKE_SOURCE_DIR}/external/vcpkg/scripts/buildsystems/vcpkg.cmake)
 #=========  Compiler/OS Fixes  =================================================#
 
 # Enhance error reporting and compiler messages
-if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+if(CMAKE_COMPILER_IN_USE STREQUAL "Clang")
     if(WIN32)
         # On Windows cuda nvcc uses cl and not clang
         add_compile_options($<$<COMPILE_LANGUAGE:C>:-fcolor-diagnostics> $<$<COMPILE_LANGUAGE:CXX>:-fcolor-diagnostics>)
@@ -141,22 +153,24 @@ if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
         add_compile_options(-fcolor-diagnostics)
     endif()
 
-    set(WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST "$ENV{EXTERNAL_INCLUDE}")
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLLVM_USE_LINKER=lld -DLLVM_CCACHE_BUILD=true")
+
+    set(PROJECT_INCLUDE_DIRECTORIES "$ENV{EXTERNAL_INCLUDE}")
+elseif(CMAKE_COMPILER_IN_USE STREQUAL "GNU")
     if(WIN32)
         # On Windows cuda nvcc uses cl and not gcc
         add_compile_options($<$<COMPILE_LANGUAGE:C>:-fdiagnostics-color=always> $<$<COMPILE_LANGUAGE:CXX>:-fdiagnostics-color=always>)
     else()
         add_compile_options(-fdiagnostics-color=always)
     endif()
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+elseif(CMAKE_COMPILER_IN_USE STREQUAL "Clang-cl" OR CMAKE_COMPILER_IN_USE STREQUAL "MSVC")
     if(MSVC_VERSION GREATER 1900)
         add_compile_options(/diagnostics:column)
     endif()
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc") # Microsoft’s compiler is super old and they care a lot about backwards compatibility so this needs to be added manually
 else()
-    message(STATUS "No colored compiler diagnostic set for '${CMAKE_CXX_COMPILER_ID}' compiler.")
+    message(STATUS "No colored compiler diagnostic set for '${CMAKE_COMPILER_IN_USE}' compiler.")
 endif()
 
 #==========  Configure Files  ==================================================#
@@ -182,6 +196,8 @@ list(REMOVE_ITEM SOURCE_LIST "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp")
 foreach(SOURCE_FILE IN LISTS SKIP_LINTING_LIST)
     set_source_files_properties(${SOURCE_FILE} PROPERTIES SKIP_LINTING ON)
 endforeach()
+
+list(APPEND PROJECT_INCLUDE_DIRECTORIES $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
 
 #===========  Create Target  ===================================================#
 
@@ -235,21 +251,23 @@ else()
 endif()
 
 if(BUILD_HEADERS_ONLY)
-    target_include_directories(${PROJECT_NAME} INTERFACE "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+    # Inlcude
+    target_include_directories(${PROJECT_NAME} INTERFACE "${PROJECT_INCLUDE_DIRECTORIES}")
 
     # Precompile headers
-    if(NOT ENABLE_CLANG_TIDY OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+    if(NOT ENABLE_CLANG_TIDY OR CMAKE_COMPILER_IN_USE STREQUAL "Clang")
         target_precompile_headers(${PROJECT_NAME} INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
     endif()
 else()
+    # Inlcude
     target_include_directories(
         ${PROJECT_NAME}
-        PUBLIC "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
+        PUBLIC "${PROJECT_INCLUDE_DIRECTORIES}"
         PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/configured_files/include"
     )
 
     # Precompile headers
-    if(NOT ENABLE_CLANG_TIDY OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+    if(NOT ENABLE_CLANG_TIDY OR CMAKE_COMPILER_IN_USE STREQUAL "Clang")
         target_precompile_headers(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
     endif()
 endif()
@@ -274,6 +292,7 @@ endif()
 
 #========  Compile Definitions  ================================================#
 
+# Target
 target_compile_definitions(${PROJECT_NAME} PRIVATE "$<$<CONFIG:DEBUG>:-D${PROJECT_NAME_TOUPPER}_DEBUG>")
 
 #=========  Link Dependencies  =================================================#
@@ -307,7 +326,8 @@ set(INSTALL_LIB_DIR "${CMAKE_INSTALL_LIBDIR}")
 
 if(PROJECT_IS_TOP_LEVEL)
     if(ENABLE_TESTING)
-        include(CTest) # NOTE: Replace this with `enable_testing()` if you get annoyed with all the build targets that CTest adds
+        set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1) # NOTE: Remove this if you want all the build targets that CTest adds
+        include(CTest)
 
         add_library(TESTING_LIBRARY INTERFACE)
 
@@ -317,18 +337,11 @@ if(PROJECT_IS_TOP_LEVEL)
         endif()
 
         target_sources(TESTING_LIBRARY INTERFACE "${SOURCE_LIST}" "${HEADER_LIST}") # NOTE: Including header files here helps IDEs but is not required
-        target_include_directories(TESTING_LIBRARY INTERFACE "${WINDOWS_HEADERS_NEEDED_BY_CLANG_LIST}" "${CMAKE_CURRENT_SOURCE_DIR}/include")
+        target_include_directories(TESTING_LIBRARY INTERFACE "${PROJECT_INCLUDE_DIRECTORIES}")
 
-        if(NOT ENABLE_CLANG_TIDY OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+        if(NOT ENABLE_CLANG_TIDY OR CMAKE_COMPILER_IN_USE STREQUAL "Clang")
             target_precompile_headers(TESTING_LIBRARY INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${PRECOMPILED_HEADER_LIST}>")
         endif()
-
-        set_target_properties(
-            TESTING_LIBRARY
-            PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD}
-                       CXX_STANDARD_REQUIRED 17
-                       CXX_EXTENSIONS NO
-        )
 
         target_compile_definitions(TESTING_LIBRARY INTERFACE "${PROJECT_NAME_TOUPPER}_TEST")
 

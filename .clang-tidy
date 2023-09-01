@@ -4,6 +4,7 @@ Checks: "-*,\
     cmake-*,\
     cppcoreguidelines-*,\
     -cppcoreguidelines-avoid-magic-numbers,\
+    -cppcoreguidelines-pro-type-reinterpret-cast,\
     -cppcoreguidelines-non-private-member-variables-in-classes,\
     google-*,\
     misc-*,\
@@ -14,7 +15,9 @@ Checks: "-*,\
     portability-*,\
     readability-*,\
     -readability-identifier-length,\
+    -readability-implicit-bool-conversion,\
     -readability-magic-numbers,\
+    -readability-uppercase-literal-suffix,\
     "
 
 HeaderFilterRegex: '.*'
